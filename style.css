@@ -1,7 +1,99 @@
-body { font-family:sans-serif; }
-.logo { font-size:2em; font-weight:700; margin:1em; }
-.user-display { position:absolute; right:32px; top:24px; }
-.login-link, .logout-btn { padding:6px 15px; border-radius:8px; border:1px solid #ccc; background:#fff; cursor:pointer;}
-.modal { position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; z-index:1000;}
-.modal-content { background:#fff; padding:2em; border-radius:1em; min-width:300px; position:relative;}
-.close {position:absolute; top:12px; right:16px; font-size:22px; cursor:pointer;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+:root {
+  --bg: #f5f6fa;
+  --card-bg: #fff;
+  --primary: #007aff;
+  --secondary: #5856d6;
+  --text: #1c1c1e;
+  --subtext: #6e6e73;
+  --border: #d1d1d6;
+}
+* { box-sizing: border-box; }
+body {
+  margin:0; font-family: 'Inter', sans-serif;
+  background: var(--bg); color: var(--text);
+}
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1em 1.5em; background: var(--card-bg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.logo { font-size:1.5rem; font-weight:700; }
+.user-display { font-size:0.95rem; }
+.login-link, .logout-btn {
+  padding:0.4em 1em; border-radius:12px;
+  border:1px solid var(--border); background: var(--card-bg);
+  cursor:pointer; font-weight:500;
+}
+.main-container {
+  max-width: 480px; margin:2em auto; padding:0 1em;
+}
+.card {
+  background: var(--card-bg); border-radius:20px;
+  padding:1.8em; box-shadow:0 4px 16px rgba(0,0,0,0.05);
+  margin-bottom:1.5em;
+}
+.title { font-size:1.6rem; font-weight:600; }
+.subtitle { font-size:1rem; color: var(--subtext); display:block; margin-top:0.3em; }
+.form label {
+  display:block; margin-top:1.2em; font-weight:500;
+}
+.form input, .form select, .auth-form input {
+  width:100%; margin-top:0.4em; padding:0.75em;
+  border:1px solid var(--border); border-radius:12px;
+  background: var(--bg);
+  font-size:1rem;
+}
+.btn-primary {
+  margin-top:1.5em; width:100%; padding:0.8em;
+  background: var(--primary); color:#fff; border:none;
+  border-radius:14px; font-size:1.05rem;
+}
+.btn-secondary {
+  margin:0.6em 0.4em 0 0;
+  padding:0.6em 1em; background: var(--secondary);
+  color:#fff; border:none; border-radius:12px;
+}
+.output-section textarea {
+  width:100%; margin-top:1em; padding:1em;
+  border:1px solid var(--border); border-radius:14px;
+  background: var(--bg); resize:vertical;
+}
+.footer {
+  text-align:center; padding:1em 0; color: var(--subtext);
+}
+/* 登入 Modal */
+.modal {
+  position:fixed; inset:0; background:rgba(0,0,0,0.2);
+  display:flex; align-items:center; justify-content:center;
+}
+.modal.hidden { display:none; }
+.modal-content {
+  background: var(--card-bg); padding:2em; border-radius:20px;
+  width:90%; max-width:360px; position:relative;
+}
+.modal-close {
+  position:absolute; top:1em; right:1em;
+  font-size:1.4rem; cursor:pointer;
+}
+.btn-google {
+  width:100%; padding:0.8em; background:#4285f4;
+  color:#fff; border:none; border-radius:12px;
+  font-weight:600;
+}
+.divider {
+  text-align:center; margin:1em 0; color:var(--border);
+}
+.auth-form {
+  display:flex; flex-direction:column;
+}
+.auth-form input { margin-bottom:1em; }
+.btn-outline {
+  padding:0.8em; border:2px solid var(--primary);
+  color: var(--primary); border-radius:14px;
+  background: transparent; font-weight:600;
+}
+@media (max-width: 400px) {
+  .header { padding:0.8em 1em; }
+  .card { padding:1.2em; }
+}
