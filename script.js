@@ -23,7 +23,6 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-// ---- UI DOM ----
 const loginModal = document.getElementById('login-modal');
 const userDisplay = document.getElementById('user-display');
 const promptForm = document.getElementById('prompt-form');
@@ -31,13 +30,11 @@ const outputSection = document.getElementById('output-section');
 const favoritesSection = document.getElementById('favorites-section');
 const toastDiv = document.getElementById('toast');
 
-// 會員狀態
 onAuthStateChanged(auth, user => {
   renderUser(user);
   if (user) renderFavorites();
 });
 
-// 渲染會員/登入按鈕
 function renderUser(user) {
   if (user) {
     userDisplay.innerHTML =
@@ -52,17 +49,14 @@ function renderUser(user) {
   }
 }
 
-// 登入 Modal 控制
 document.getElementById('modal-close').onclick = () => loginModal.classList.add('hidden');
 window.onclick = e => { if (e.target === loginModal) loginModal.classList.add('hidden'); };
 
-// Google 登入
 document.getElementById('google-login').onclick = async () => {
   try { await signInWithPopup(auth, provider); loginModal.classList.add('hidden'); }
   catch (e) { showToast('Google 登入失敗'); }
 };
 
-// Email 註冊
 document.getElementById('registerForm').onsubmit = async e => {
   e.preventDefault();
   const email = e.target.regEmail.value;
@@ -73,7 +67,6 @@ document.getElementById('registerForm').onsubmit = async e => {
   } catch (err) { showToast('註冊失敗：' + err.message); }
 };
 
-// Email 登入
 document.getElementById('loginForm').onsubmit = async e => {
   e.preventDefault();
   const email = e.target.loginEmail.value;
@@ -84,29 +77,30 @@ document.getElementById('loginForm').onsubmit = async e => {
   } catch (err) { showToast('登入失敗：' + err.message); }
 };
 
-// 產生 Prompt
+// ----- 重點修改：Prompt 組合 -----
 promptForm.onsubmit = function (e) {
   e.preventDefault();
-  const topic = document.getElementById('topic').value.trim();
+  const userRole = document.getElementById('userRole').value.trim();
   const audience = document.getElementById('audience').value.trim();
+  const topic = document.getElementById('topic').value.trim();
   const platform = document.getElementById('platform').value;
   const tone = document.getElementById('tone').value;
   const constraint = document.getElementById('constraint').value.trim();
   const format = document.getElementById('format').value;
-  let prompt = `請以${tone}風格，為「${audience}」設計主題「${topic}」的${format}`;
+
+  let prompt = `你是${userRole}，請以${tone}語氣，針對「${audience}」，圍繞主題「${topic}」產生${format}`;
   if (constraint) prompt += `（${constraint}）`;
   prompt += `。\n（適用於 ${platform}）`;
+
   document.getElementById('output').value = prompt;
   outputSection.style.display = 'block';
 };
 
-// 複製 Prompt
 document.getElementById('copy-btn').onclick = () => {
   const out = document.getElementById('output').value;
   navigator.clipboard.writeText(out).then(()=>showToast('已複製到剪貼簿！'));
 };
 
-// 加入我的最愛
 document.getElementById('save-btn').onclick = async () => {
   if (!auth.currentUser) {
     showToast('請先登入會員才能收藏！');
@@ -123,7 +117,6 @@ document.getElementById('save-btn').onclick = async () => {
   renderFavorites();
 };
 
-// 渲染我的最愛
 async function renderFavorites() {
   if (!auth.currentUser) return;
   const favs = [];
@@ -162,7 +155,6 @@ window.deleteFav = async id => {
   renderFavorites();
 };
 
-// 匯出收藏
 document.getElementById('export-btn').onclick = async () => {
   if (!auth.currentUser) return;
   const favs = [];
@@ -180,17 +172,17 @@ document.getElementById('export-btn').onclick = async () => {
   showToast('已匯出！');
 };
 
-// Toast
 function showToast(msg) {
   toastDiv.textContent = msg;
   toastDiv.className = 'toast show';
   setTimeout(() => { toastDiv.className = 'toast'; }, 1600);
 }
 
-// ---- 快速範本套用 ----
+// 範本（可照需求自行增加）
 const templates = {
   creative_copy: {
     topic: "新產品上市活動亮點",
+    userRole: "社群小編",
     audience: "大眾消費者",
     platform: "ChatGPT",
     tone: "啟發性",
@@ -200,6 +192,7 @@ const templates = {
   },
   lesson_plan: {
     topic: "五分鐘自學Python",
+    userRole: "老師",
     audience: "國中小學生",
     platform: "ChatGPT",
     tone: "輕鬆",
@@ -209,6 +202,7 @@ const templates = {
   },
   social_post: {
     topic: "母親節祝福短句",
+    userRole: "社群小編",
     audience: "Facebook社群粉絲",
     platform: "ChatGPT",
     tone: "溫馨",
@@ -221,6 +215,7 @@ document.getElementById('template-select').addEventListener('change', function()
   const t = templates[this.value];
   if (t) {
     document.getElementById('topic').value = t.topic;
+    document.getElementById('userRole').value = t.userRole;
     document.getElementById('audience').value = t.audience;
     document.getElementById('platform').value = t.platform;
     document.getElementById('tone').value = t.tone;
