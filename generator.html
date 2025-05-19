@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt 產生器（進階收藏功能）</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="index.html">← 返回首頁</a></div>
+    <div class="login-button">登入</div>
+  </header>
+
+  <main class="generator">
+    <h1>AI Prompt 組合器 <span class="sub">（多情境分組收藏）</span></h1>
+
+    <section class="template-section">
+      <label for="template-select"><b>快速套用範本</b></label>
+      <select id="template-select">
+        <option value="">客製化或下拉參考範本</option>
+        <option value="creative_copy">創意文案生成</option>
+        <option value="learning_summary">學習重點整理</option>
+        <option value="meeting_notes">會議紀錄摘要</option>
+        <option value="brainstorm">腦力激盪/創意思考</option>
+        <option value="roleplay">AI 情境模擬對話</option>
+        <option value="midjourney">Midjourney 圖像創意</option>
+        <option value="pro_writer">專業寫作助手</option>
+      </select>
+      <button id="clear-form" type="button" title="清空所有欄位">清空</button>
+    </section>
+
+    <form id="prompt-form" novalidate>
+      <label>
+        <span class="required-label">* 主題內容：</span>
+        <input type="text" id="topic" placeholder="如：新產品上市、教學腳本、社群貼文…" autocomplete="off" />
+        <small>
+          請明確描述你想要產生的主題或情境（例如：「新產品上市」、「會議重點」、「創意文案」、「品牌故事」、「AI圖像指令」等）。<br>
+          你可以輸入：<br>
+          — 產品介紹（如「XXX新功能亮點」）<br>
+          — 主題式故事（如「AI時代的教育改變」）<br>
+          — 社群貼文或文案主題（如「母親節祝福短句」）<br>
+          — 教學內容（如「五分鐘自學Python」）<br>
+          — 行銷企劃、活動宣傳、設計指令<br>
+          — AI 圖像描述（如「日本街景插畫風」）<br>
+          建議盡量明確具體，效果最佳。
+          <span class="error-msg" id="error-topic"></span>
+        </small>
+      </label>
+      <label>
+        <span class="required-label">* 目標受眾：</span>
+        <input type="text" id="audience" placeholder="如：大眾消費者、高中生..." autocomplete="off" />
+        <small>
+          你的這組 prompt 會給誰用？（例如：學生、行銷人員、專業設計師、AI工具…）<br>
+          建議用「身份＋需求」方式描述，例如「品牌經理需提案」、「剛學會 Midjourney 的設計師」。
+          <span class="error-msg" id="error-audience"></span>
+        </small>
+      </label>
+      <label>
+        <span class="required-label">* 使用平台：</span>
+        <select id="platform">
+          <option value="">— 請選擇 —</option>
+          <option value="ChatGPT">ChatGPT</option>
+          <option value="Midjourney">Midjourney</option>
+          <option value="通用">通用/其他</option>
+        </select>
+        <small>
+          你要把 prompt 用在哪個 AI 平台？如果不確定可以選「通用/其他」。<br>
+          例如 ChatGPT 文字內容、Midjourney 生成圖片、或其他 AI 工具皆可用。
+          <span class="error-msg" id="error-platform"></span>
+        </small>
+      </label>
+      <label>
+        <span class="required-label">* 語氣/風格：</span>
+        <select id="tone">
+          <option value="">— 請選擇 —</option>
+          <option value="專業">專業</option>
+          <option value="輕鬆">輕鬆</option>
+          <option value="詩意">詩意</option>
+          <option value="啟發性">啟發性</option>
+          <option value="品牌感">品牌感</option>
+        </select>
+        <small>
+          希望 AI 產出的語氣，例如「專業」、「故事性」、「輕鬆」、「品牌感」、「啟發性」等。<br>
+          可根據不同使用情境調整（如：要幽默一點？還是學術一點？）。
+          <span class="error-msg" id="error-tone"></span>
+        </small>
+      </label>
+      <label>
+        限制條件（選填）：
+        <input type="text" id="constraint" placeholder="如：條列、字數、必須引用數據…" autocomplete="off" />
+        <small>
+          如有特殊需求（如「200字內」、「條列」、「要有引用」、「不使用專有名詞」等），請填寫。<br>
+          如果沒有特別限制可以留空。
+        </small>
+      </label>
+      <label>
+        <span class="required-label">* 輸出格式：</span>
+        <select id="format">
+          <option value="">— 請選擇 —</option>
+          <option value="簡短描述">簡短描述</option>
+          <option value="詳細描述">詳細描述</option>
+          <option value="腳本/多段">腳本/多段</option>
+        </select>
+        <small>
+          希望 AI 產生哪種形式？<br>
+          「簡短描述」：適合一句話、短文案、口號等。<br>
+          「詳細描述」：適合完整介紹、長文內容、報告等。<br>
+          「腳本/多段」：適合劇本、逐步教學、多段落內容。
+          <span class="error-msg" id="error-format"></span>
+        </small>
+      </label>
+      <label>
+        收藏分組（選填）：
+        <input type="text" id="group" placeholder="如：工作、學習、圖像、創意…" autocomplete="off" />
+        <small>
+          收藏時可為此 prompt 加上自訂分組（如「學習」、「Midjourney 圖像」、「品牌文案」等），方便管理與搜尋。
+        </small>
+      </label>
+      <button type="submit">產生專業 Prompt</button>
+    </form>
+
+    <section id="output-section" class="output-section" style="display:none;">
+      <h2>🎉 產生結果</h2>
+      <textarea id="output" rows="7" readonly></textarea>
+      <button id="copy-btn" type="button">複製 Prompt</button>
+      <button id="save-btn" type="button">收藏</button>
+      <div class="explanation" id="explanation"></div>
+      <div class="usage-tips" id="usage-tips"></div>
+    </section>
+
+    <section id="favorites-section" class="favorites-section" style="display:none;">
+      <div class="favorites-header">
+        <h2>⭐ 我的收藏</h2>
+        <button id="export-btn" type="button">一鍵匯出全部</button>
+      </div>
+      <div id="favorites-list"></div>
+    </section>
+
+    <div class="toast" id="toast">已複製到剪貼簿！</div>
+    <div class="toast" id="toast-saved">已加入收藏！</div>
+    <div class="toast" id="toast-deleted">已刪除收藏！</div>
+    <div class="toast" id="toast-edited">已儲存編輯！</div>
+    <div class="toast" id="toast-export">已匯出收藏！</div>
+  </main>
+
+  <footer>
+    <div>Prompt 產生器 © 2025</div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

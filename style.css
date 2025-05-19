@@ -1,0 +1,390 @@
+body {
+    font-family: "SF Pro Display", "PingFang TC", "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f6fa;
+    color: #222;
+    letter-spacing: 0.02em;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 48px 16px 48px;
+    background: transparent;
+    box-shadow: none;
+  }
+  
+  .logo {
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+  }
+  
+  .logo a {
+    text-decoration: none;
+    color: #111;
+    transition: color 0.2s;
+  }
+  
+  .logo a:hover {
+    color: #4285f4;
+  }
+  
+  .login-button {
+    background: rgba(245,246,250,0.7);
+    border: 1.5px solid #bbb;
+    border-radius: 18px;
+    padding: 8px 22px;
+    font-size: 16px;
+    color: #666;
+    cursor: pointer;
+    transition: border 0.2s, color 0.2s, background 0.2s;
+  }
+  .login-button:hover {
+    border: 1.5px solid #4285f4;
+    color: #4285f4;
+    background: #fff;
+  }
+  
+  .generator {
+    padding: 54px 0 30px 0;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 400;
+    text-align: center;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    margin-top: 10px;
+    color: #141517;
+  }
+  h1 .sub {
+    font-size: 1.02rem;
+    color: #bdbdbd;
+    font-weight: 400;
+    display: block;
+    margin-top: 4px;
+  }
+  
+  .template-section {
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+  }
+  .template-section label {
+    font-weight: 500;
+  }
+  .template-section select {
+    padding: 12px 20px;
+    border-radius: 16px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    background: #fff;
+    color: #111;
+    transition: border 0.2s;
+    box-shadow: 0 1px 6px #e8e8e8;
+  }
+  .template-section select:focus {
+    outline: none;
+    border: 1.5px solid #4285f4;
+  }
+  
+  #clear-form {
+    background: #f7f7f7;
+    border: none;
+    color: #888;
+    padding: 9px 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1rem;
+    box-shadow: 0 1px 5px #ececec;
+  }
+  #clear-form:hover {
+    background: #eaeaea;
+    color: #222;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: #fff;
+    border-radius: 28px;
+    padding: 38px 32px 22px 32px;
+    box-shadow: 0 4px 36px 0 rgba(30,34,90,0.09);
+    border: 1.5px solid #f1f1f1;
+  }
+  
+  form label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    gap: 4px;
+    font-size: 1.07rem;
+    margin-bottom: 2px;
+  }
+  
+  form input, form select {
+    font-size: 1.03rem;
+    padding: 14px 12px;
+    margin-top: 3px;
+    border: none;
+    border-radius: 14px;
+    background: #f8f8fa;
+    box-shadow: 0 1px 5px #ededed;
+    transition: box-shadow 0.16s, border 0.16s;
+    outline: none;
+  }
+  form input:focus, form select:focus {
+    box-shadow: 0 0 0 2.5px #4285f4;
+    background: #fff;
+  }
+  
+  form small {
+    color: #9aa0a6;
+    font-size: 13.5px;
+    margin-left: 2px;
+    font-weight: normal;
+    line-height: 1.6;
+  }
+  .required-label {
+    color: #d32f2f;
+    font-weight: bold;
+  }
+  .error-msg {
+    color: #d32f2f;
+    margin-left: 8px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  form button {
+    padding: 16px;
+    background: linear-gradient(90deg,#222 65%,#232529 100%);
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    margin-top: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.07em;
+    box-shadow: 0 2px 12px #e0e0e0;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  form button:hover {
+    background: linear-gradient(90deg,#4285f4 70%,#4e92ff 100%);
+    box-shadow: 0 4px 24px #e3f0ff;
+    color: #fff;
+  }
+  
+  .output-section {
+    margin-top: 48px;
+    text-align: center;
+    background: #fff;
+    padding: 36px 28px 28px 28px;
+    border-radius: 28px;
+    box-shadow: 0 3px 36px rgba(30,34,90,0.09);
+    border: 1.5px solid #f1f1f1;
+  }
+  .output-section h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #4285f4;
+    margin-bottom: 18px;
+    letter-spacing: 0.03em;
+  }
+  
+  .output-section textarea {
+    width: 100%;
+    padding: 18px;
+    font-size: 1.08rem;
+    margin-bottom: 18px;
+    border: none;
+    border-radius: 16px;
+    background: #f7f7fa;
+    resize: vertical;
+    box-shadow: 0 1px 7px #eee;
+    transition: box-shadow 0.14s;
+  }
+  .output-section textarea:focus {
+    box-shadow: 0 0 0 2.5px #4285f4;
+    background: #fff;
+  }
+  
+  #copy-btn, #save-btn {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 12px 34px;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-right: 8px;
+    font-weight: 500;
+    transition: background 0.18s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px #e0e0e0;
+  }
+  #copy-btn:hover {
+    background: #4285f4;
+    color: #fff;
+  }
+  #save-btn {
+    background: #ff9800;
+    color: #fff;
+  }
+  #save-btn:hover {
+    background: #c77600;
+  }
+  
+  .explanation {
+    margin-top: 20px;
+    background: #f3f7fb;
+    border-left: 5px solid #4285f4;
+    padding: 16px 16px 16px 13px;
+    font-size: 1.03rem;
+    color: #375170;
+    border-radius: 7px;
+    text-align: left;
+    font-weight: 400;
+    margin-bottom: 7px;
+  }
+  
+  .usage-tips {
+    margin-top: 13px;
+    font-size: 1rem;
+    background: #fffbe8;
+    border-left: 5px solid #ffe57f;
+    color: #786212;
+    padding: 13px 15px 12px 15px;
+    border-radius: 6px;
+    text-align: left;
+  }
+  
+  .favorites-section {
+    margin-top: 46px;
+    background: #fff;
+    padding: 32px 18px 36px 18px;
+    border-radius: 28px;
+    box-shadow: 0 2px 24px rgba(30,34,90,0.10);
+    border: 1.5px solid #f1f1f1;
+  }
+  .favorites-section h2 {
+    margin-bottom: 14px;
+    color: #b87f1f;
+    display: inline-block;
+    font-size: 1.13rem;
+    font-weight: 600;
+  }
+  .favorites-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  #export-btn {
+    background: #ff9800;
+    border: none;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 1px 5px #fae3c5;
+    transition: background 0.18s;
+  }
+  #export-btn:hover {
+    background: #c77600;
+  }
+  
+  .group-title {
+    font-weight: bold;
+    margin-top: 28px;
+    font-size: 1.13rem;
+    color: #4285f4;
+    border-left: 5px solid #e3edfa;
+    padding-left: 9px;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  
+  .favorite-card {
+    background: #fafcff;
+    border: 1.5px solid #ececec;
+    border-left: 5px solid #ff9800;
+    margin-bottom: 18px;
+    padding: 18px 14px 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 0 10px 0 #eee;
+    position: relative;
+    text-align: left;
+    transition: box-shadow 0.14s;
+  }
+  .favorite-card:hover {
+    box-shadow: 0 3px 18px #e0f3fa;
+  }
+  .favorite-content, .favorite-edit-area {
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+    font-size: 1.07rem;
+  }
+  .favorite-btns {
+    display: flex;
+    gap: 10px;
+  }
+  .favorite-copy, .favorite-delete, .favorite-edit, .favorite-save, .favorite-cancel {
+    background: #f7f7f7;
+    border: none;
+    color: #444;
+    padding: 8px 20px;
+    border-radius: 11px;
+    cursor: pointer;
+    font-size: 0.98rem;
+    transition: background 0.16s;
+    font-weight: 500;
+    box-shadow: 0 1px 4px #ececec;
+  }
+  .favorite-copy:hover { background: #c7ffcb; color: #222;}
+  .favorite-delete:hover { background: #ffe7e0; color: #e74c3c;}
+  .favorite-edit:hover { background: #e6f0ff; color: #296edb;}
+  .favorite-save { background: #43b663; color: #fff;}
+  .favorite-save:hover { background: #2e974d;}
+  .favorite-cancel:hover { background: #ffe57f;}
+  
+  .toast {
+    display: none;
+    position: fixed;
+    bottom: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(44,44,46,0.96);
+    color: #fff;
+    padding: 16px 38px;
+    border-radius: 22px;
+    font-size: 1.07rem;
+    box-shadow: 0 8px 32px #c9eaff;
+    opacity: 0.96;
+    z-index: 99;
+    letter-spacing: 0.07em;
+    transition: opacity 0.5s;
+  }
+  
+  footer {
+    padding: 28px;
+    text-align: center;
+    background: transparent;
+    margin-top: 55px;
+    color: #bbb;
+    font-size: 1.03rem;
+    letter-spacing: 0.06em;
+  }
+  
