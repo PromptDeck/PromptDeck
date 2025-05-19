@@ -9,6 +9,7 @@ import {
   orderBy, getDocs, deleteDoc, doc
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 
+// ---- 你的 firebaseConfig ----
 const firebaseConfig = {
   apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
   authDomain: "promptdeck-8366f.firebaseapp.com",
@@ -23,6 +24,7 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
+// ---- UI DOM ----
 const loginModal = document.getElementById('login-modal');
 const userDisplay = document.getElementById('user-display');
 const promptForm = document.getElementById('prompt-form');
@@ -30,11 +32,13 @@ const outputSection = document.getElementById('output-section');
 const favoritesSection = document.getElementById('favorites-section');
 const toastDiv = document.getElementById('toast');
 
+// ---- 會員狀態監聽 ----
 onAuthStateChanged(auth, user => {
   renderUser(user);
   if (user) renderFavorites();
 });
 
+// ---- 渲染登入註冊 UI ----
 function renderUser(user) {
   if (user) {
     userDisplay.innerHTML =
@@ -49,6 +53,7 @@ function renderUser(user) {
   }
 }
 
+// ---- 登入彈窗控制 ----
 document.getElementById('modal-close').onclick = () => loginModal.classList.add('hidden');
 window.onclick = e => { if (e.target === loginModal) loginModal.classList.add('hidden'); };
 
@@ -77,7 +82,7 @@ document.getElementById('loginForm').onsubmit = async e => {
   } catch (err) { showToast('登入失敗：' + err.message); }
 };
 
-// ----- 重點修改：Prompt 組合 -----
+// ----- Prompt 產生顯示於下方 -----
 promptForm.onsubmit = function (e) {
   e.preventDefault();
   const userRole = document.getElementById('userRole').value.trim();
@@ -117,6 +122,7 @@ document.getElementById('save-btn').onclick = async () => {
   renderFavorites();
 };
 
+// ---- 我的最愛（收藏/刪除/複製/匯出） ----
 async function renderFavorites() {
   if (!auth.currentUser) return;
   const favs = [];
@@ -172,13 +178,14 @@ document.getElementById('export-btn').onclick = async () => {
   showToast('已匯出！');
 };
 
+// ---- Toast ----
 function showToast(msg) {
   toastDiv.textContent = msg;
   toastDiv.className = 'toast show';
   setTimeout(() => { toastDiv.className = 'toast'; }, 1600);
 }
 
-// 範本（可照需求自行增加）
+// ---- 快速範本 ----
 const templates = {
   creative_copy: {
     topic: "新產品上市活動亮點",
