@@ -1,136 +1,76 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-import {
-  getAuth, GoogleAuthProvider, signInWithPopup,
-  createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import {
-  getFirestore, collection, addDoc, query,
-  orderBy, getDocs, deleteDoc, doc, updateDoc
-} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-
-// 初始化 Firebase
-const firebaseConfig = { /* 你的配置 */
-  apiKey: "AIzaSyDPE6...",
-  authDomain: "promptdeck-8366f.firebaseapp.com",
-  projectId: "promptdeck-8366f",
-  storageBucket: "promptdeck-8366f.appspot.com",
-  messagingSenderId: "1047872909519",
-  appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba"
+// 預設三種範本資料，可依需求再擴充
+const templates = {
+  creative_copy: {
+    topic: "新產品上市活動亮點",
+    audience: "大眾消費者",
+    platform: "ChatGPT",
+    tone: "啟發性",
+    constraint: "條列五點, 100字內",
+    format: "簡短描述",
+    group: "行銷"
+  },
+  lesson_plan: {
+    topic: "五分鐘自學Python",
+    audience: "國中小學生",
+    platform: "ChatGPT",
+    tone: "輕鬆",
+    constraint: "200字內, 要有引導性",
+    format: "腳本/多段",
+    group: "學習"
+  },
+  social_post: {
+    topic: "母親節祝福短句",
+    audience: "Facebook社群粉絲",
+    platform: "ChatGPT",
+    tone: "溫馨",
+    constraint: "20字以內, 要有情感共鳴",
+    format: "簡短描述",
+    group: "社群"
+  }
 };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-const db = getFirestore(app);
 
-// DOM
-const loginModal = document.getElementById('login-modal');
-const userDisplay = document.getElementById('user-display');
-const promptForm = document.getElementById('prompt-form');
-const outputSection = document.getElementById('output-section');
-const favoritesSection = document.getElementById('favorites-section');
-
-// 監聽登入狀態
-onAuthStateChanged(auth, async user => {
-  renderUser(user);
-  if (user) await renderFavorites();
+// 快速範本套用
+document.getElementById('template-select').addEventListener('change', function() {
+  const t = templates[this.value];
+  if (t) {
+    document.getElementById('topic').value = t.topic;
+    document.getElementById('audience').value = t.audience;
+    document.getElementById('platform').value = t.platform;
+    document.getElementById('tone').value = t.tone;
+    document.getElementById('constraint').value = t.constraint;
+    document.getElementById('format').value = t.format;
+    document.getElementById('group').value = t.group;
+  }
 });
 
-// 顯示使用者狀態
-function renderUser(user) {
-  if (user) {
-    userDisplay.innerHTML = 
-      `<span class="user-mail">${user.email || user.displayName}</span>
-       <button id="logoutBtn" class="logout-btn">登出</button>`;
-    document.getElementById('logoutBtn').onclick = () => signOut(auth);
-    favoritesSection.style.display = 'block';
-  } else {
-    userDisplay.innerHTML = `<span class="login-link" id="showLogin">登入 / 註冊</span>`;
-    document.getElementById('showLogin').onclick = () => loginModal.classList.remove('hidden');
-    favoritesSection.style.display = 'none';
-  }
-}
+// 清空表單
+document.getElementById('clear-form').addEventListener('click', function() {
+  document.getElementById('prompt-form').reset();
+  document.getElementById('template-select').value = '';
+});
 
-// Modal
-document.getElementById('modal-close').onclick = () => loginModal.classList.add('hidden');
-window.onclick = e => { if (e.target === loginModal) loginModal.classList.add('hidden'); };
-
-document.getElementById('google-login').onclick = async () => {
-  try { await signInWithPopup(auth, provider); loginModal.classList.add('hidden'); }
-  catch (e) { alert('Google 登入失敗：' + e.message); }
-};
-
-// Email 註冊
-document.getElementById('registerForm').onsubmit = async e => {
+// 表單送出產生 prompt
+document.getElementById('prompt-form').addEventListener('submit', function(e) {
   e.preventDefault();
-  const email = e.target.regEmail.value;
-  const pw = e.target.regPassword.value;
-  try {
-    await createUserWithEmailAndPassword(auth, email, pw);
-    alert('註冊成功'); loginModal.classList.add('hidden');
-  } catch (err) { alert('註冊失敗：' + err.message); }
-};
+  // 驗證必填
+  let err = false;
+  ['topic','audience','platform','tone','format'].forEach(id=>{
+    if(!document.getElementById(id).value.trim()) err=true;
+  });
+  if (err) { alert('請填寫所有必填欄位'); return; }
 
-// Email 登入
-document.getElementById('loginForm').onsubmit = async e => {
-  e.preventDefault();
-  const email = e.target.loginEmail.value;
-  const pw = e.target.loginPassword.value;
-  try {
-    await signInWithEmailAndPassword(auth, email, pw);
-    alert('登入成功'); loginModal.classList.add('hidden');
-  } catch (err) { alert('登入失敗：' + err.message); }
-};
+  // 取得值
+  const topic = document.getElementById('topic').value.trim();
+  const audience = document.getElementById('audience').value.trim();
+  const platform = document.getElementById('platform').value;
+  const tone = document.getElementById('tone').value;
+  const constraint = document.getElementById('constraint').value.trim();
+  const format = document.getElementById('format').value;
+  // 組合 prompt
+  let prompt = `請以${tone}風格，為「${audience}」設計一份主題為「${topic}」的${format}`;
+  if (constraint) prompt += `（${constraint}）`;
+  prompt += `。\n（適用於 ${platform}）`;
 
-// 產生 Prompt
-promptForm.onsubmit = e => {
-  e.preventDefault();
-  const topic = e.target.topic.value.trim();
-  const role  = e.target.userRole.value.trim();
-  const aud   = e.target.audience.value.trim();
-  const pl    = e.target.platform.value;
-  const tone  = e.target.tone.value;
-  const fmt   = e.target.format.value;
-  let prompt = `你是${role}，請以「${tone}」帶給「${aud}」，圍繞「${topic}」，產出${fmt}`;
-  document.getElementById('output').value = prompt;
-  outputSection.style.display = 'block';
-};
-
-// 收藏
-document.getElementById('save-btn').onclick = async () => {
-  if (!auth.currentUser) {
-    alert('請先登入'); document.getElementById('showLogin').click(); return;
-  }
-  const text = document.getElementById('output').value;
-  await addDoc(collection(db, 'users', auth.currentUser.uid, 'favorites'), { text, created: Date.now() });
-  showToast('加入最愛');
-  renderFavorites();
-};
-
-// 渲染收藏
-async function renderFavorites() {
-  if (!auth.currentUser) return;
-  const favs = [];
-  const snap = await getDocs(query(
-    collection(db, 'users', auth.currentUser.uid, 'favorites'), orderBy('created', 'desc')
-  ));
-  snap.forEach(d => favs.push({ id: d.id, ...d.data() }));
-  const list = document.getElementById('favorites-list');
-  list.innerHTML = favs.map(f => 
-    `<div class="favorite-card">
-      <div>${f.text}</div>
-      <button onclick="deleteFav('${f.id}')">刪除</button>
-    </div>`).join('');
-}
-window.deleteFav = async id => {
-  await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'favorites', id));
-  renderFavorites();
-};
-
-// Toast
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.className='toast'; t.textContent=msg;
-  document.body.append(t);
-  setTimeout(()=>t.remove(),1500);
-}
+  // 彈窗顯示（你可改為頁內輸出）
+  alert('推薦專業 Prompt：\n\n' + prompt);
+});
