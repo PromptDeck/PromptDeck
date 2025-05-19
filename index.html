@@ -5,59 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PromptDeck - AI Prompt 產生&雲端收藏</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
+  <header class="header">
     <div class="logo">PromptDeck</div>
     <div id="user-display" class="user-display"></div>
   </header>
-  <main id="main-app">
-    <h1>PromptDeck <span class="sub">AI Prompt 組合 × 我的雲端最愛</span></h1>
-    <form id="prompt-form" novalidate>
-      <input type="text" id="topic" placeholder="主題內容" required />
-      <input type="text" id="userRole" placeholder="使用者角色" required />
-      <input type="text" id="audience" placeholder="目標受眾" required />
-      <select id="platform" required>
-        <option value="">平台</option>
-        <option value="ChatGPT">ChatGPT</option>
-        <option value="Midjourney">Midjourney</option>
-      </select>
-      <select id="tone" required>
-        <option value="">語氣</option>
-        <option value="專業">專業</option>
-        <option value="輕鬆">輕鬆</option>
-      </select>
-      <select id="format" required>
-        <option value="">格式</option>
-        <option value="簡短描述">簡短描述</option>
-      </select>
-      <button type="submit">產生 Prompt</button>
-    </form>
-    <div id="output-section" style="display:none;">
-      <textarea id="output" rows="7" readonly></textarea>
-      <button id="save-btn" type="button">加入我的最愛</button>
-    </div>
-    <div id="favorites-section" style="display:none;">
-      <h2>我的最愛</h2>
+
+  <main class="main-container">
+    <section class="card">
+      <h1 class="title">PromptDeck <span class="subtitle">AI Prompt 組合 × 我的雲端最愛</span></h1>
+
+      <form id="prompt-form" novalidate>
+        <label>主題內容：<input type="text" id="topic" placeholder="例如：新產品上市" required></label>
+        <label>使用者角色：<input type="text" id="userRole" placeholder="例如：社群小編" required></label>
+        <label>目標受眾：<input type="text" id="audience" placeholder="例如：25-35歲女性" required></label>
+
+        <label>
+          平台：
+          <select id="platform" required>
+            <option value="">請選擇</option>
+            <option value="ChatGPT">ChatGPT</option>
+            <option value="Midjourney">Midjourney</option>
+          </select>
+        </label>
+
+        <label>
+          語氣：
+          <select id="tone" required>
+            <option value="">請選擇</option>
+            <option value="專業">專業</option>
+            <option value="輕鬆">輕鬆</option>
+            <option value="詩意">詩意</option>
+          </select>
+        </label>
+
+        <label>
+          格式：
+          <select id="format" required>
+            <option value="">請選擇</option>
+            <option value="簡短描述">簡短描述</option>
+            <option value="詳細描述">詳細描述</option>
+            <option value="腳本/多段">腳本/多段</option>
+          </select>
+        </label>
+
+        <button type="submit" class="btn-primary">產生 Prompt</button>
+      </form>
+
+      <section id="output-section" style="display:none;">
+        <textarea id="output" rows="6" readonly></textarea>
+        <button id="copy-btn" class="btn-secondary">複製 Prompt</button>
+        <button id="save-btn" class="btn-secondary">加入我的最愛</button>
+      </section>
+    </section>
+
+    <section id="favorites-section" class="card" style="display:none;">
+      <h2>⭐ 我的最愛</h2>
       <div id="favorites-list"></div>
-    </div>
-    <div id="login-modal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <span id="modal-close" class="close">&times;</span>
-        <button id="google-login">Google 登入</button>
-        <form id="loginForm">
-          <input type="email" id="loginEmail" placeholder="Email" required>
-          <input type="password" id="loginPassword" placeholder="密碼" required>
-          <button type="submit">登入</button>
-        </form>
-        <form id="registerForm">
-          <input type="email" id="regEmail" placeholder="Email" required>
-          <input type="password" id="regPassword" placeholder="密碼" required>
-          <button type="submit">註冊</button>
-        </form>
-      </div>
-    </div>
+    </section>
   </main>
+
+  <div id="login-modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="modal-close" class="modal-close">&times;</span>
+      <h2>登入或註冊</h2>
+      <button id="google-login" class="btn-google">使用 Google 帳號登入</button>
+      <div class="divider">或</div>
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="密碼" required>
+        <button type="submit" class="btn-primary">登入</button>
+      </form>
+      <form id="registerForm">
+        <input type="email" id="regEmail" placeholder="Email" required>
+        <input type="password" id="regPassword" placeholder="密碼" required>
+        <button type="submit" class="btn-outline">註冊</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">PromptDeck © 2025</footer>
   <script type="module" src="script.js"></script>
 </body>
 </html>
