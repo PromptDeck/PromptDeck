@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc, orderBy } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
@@ -11,49 +11,43 @@ const firebaseConfig = {
   appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
   measurementId: "G-QD99FJNSGH"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
+// Modal 彈窗
+const loginModal = document.getElementById('login-modal');
 const userDisplay = document.getElementById('user-display');
-const loginSection = document.getElementById('login-section');
-const mainApp = document.getElementById('main-app');
 
-function setUserDisplay(user) {
+// ===== 登入狀態切換顯示 =====
+function renderUser(user) {
   if (user) {
-    userDisplay.innerHTML = `
-      <span class="user-mail">${user.email || user.displayName}</span>
-      <button id="logoutBtn" class="logout-btn">登出</button>
-    `;
-    document.getElementById('logoutBtn').onclick = logout;
+    userDisplay.innerHTML = `<span class="user-mail">${user.email || user.displayName}</span><button id="logoutBtn" class="logout-btn">登出</button>`;
+    document.getElementById('logoutBtn').onclick = () => { signOut(auth); };
   } else {
-    userDisplay.innerHTML = '';
+    userDisplay.innerHTML = `<span class="login-link" id="showLogin">登入 / 註冊</span>`;
+    document.getElementById('showLogin').onclick = () => { loginModal.style.display = 'flex'; };
   }
 }
-
 onAuthStateChanged(auth, async user => {
-  setUserDisplay(user);
+  renderUser(user);
   if (user) {
-    loginSection.style.display = 'none';
-    mainApp.style.display = '';
     await renderFavorites();
   } else {
-    loginSection.style.display = '';
-    mainApp.style.display = 'none';
+    document.getElementById("favorites-section").style.display = "none";
   }
 });
 
+// ===== 登入 modal 彈窗邏輯 =====
+document.getElementById('modal-close').onclick = function(){ loginModal.style.display = 'none'; };
+window.onclick = function(e){ if(e.target === loginModal){ loginModal.style.display = 'none'; } };
+
 // Google 登入
 document.getElementById("google-login").onclick = async () => {
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (e) {
-    alert('Google 登入失敗：' + e.message);
-  }
+  try { await signInWithPopup(auth, provider); loginModal.style.display = 'none'; }
+  catch (e) { alert('Google 登入失敗：' + e.message); }
 };
-
 // Email 註冊
 document.getElementById('registerForm').onsubmit = async (e) => {
   e.preventDefault();
@@ -61,12 +55,11 @@ document.getElementById('registerForm').onsubmit = async (e) => {
   const password = document.getElementById('regPassword').value;
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    alert('註冊成功，歡迎使用 PromptDeck！');
+    alert('註冊成功，歡迎使用 PromptDeck！'); loginModal.style.display = 'none';
   } catch (error) {
     alert('註冊失敗：' + error.message);
   }
 };
-
 // Email 登入
 document.getElementById('loginForm').onsubmit = async (e) => {
   e.preventDefault();
@@ -74,20 +67,14 @@ document.getElementById('loginForm').onsubmit = async (e) => {
   const password = document.getElementById('loginPassword').value;
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    alert('登入成功！');
+    alert('登入成功！'); loginModal.style.display = 'none';
   } catch (error) {
     alert('登入失敗：' + error.message);
   }
 };
 
-// 登出
-function logout() {
-  signOut(auth);
-  alert('已登出');
-}
-
-// ===== Prompt 產生&表單 =====
-const templates = {
+// ========== Prompt 產生 ==========（與前一版一致，可優化細節）
+const templates = { /*...範本同前...*/ 
   creative_copy: { topic: "新產品上市", userRole: "行銷企劃", audience: "大眾消費者", platform: "ChatGPT", tone: "啟發性", constraint: "加入生活情境，100字內", format: "簡短描述" },
   learning_summary: { topic: "量子力學入門", userRole: "老師", audience: "高中生", platform: "ChatGPT", tone: "輕鬆", constraint: "重點條列、白話解釋", format: "詳細描述" },
   meeting_notes: { topic: "本週專案會議重點", userRole: "專案經理", audience: "團隊成員", platform: "ChatGPT", tone: "專業", constraint: "用條列整理，內容精簡", format: "腳本/多段" },
@@ -100,11 +87,7 @@ const templateSelect = document.getElementById("template-select");
 if (templateSelect) {
   templateSelect.addEventListener("change", function () {
     const val = templateSelect.value;
-    if (templates[val]) {
-      Object.entries(templates[val]).forEach(([k, v]) => {
-        if (document.getElementById(k)) document.getElementById(k).value = v;
-      });
-    }
+    if (templates[val]) Object.entries(templates[val]).forEach(([k, v]) => { if (document.getElementById(k)) document.getElementById(k).value = v; });
   });
 }
 document.getElementById("clear-form").onclick = function () {
@@ -113,16 +96,9 @@ document.getElementById("clear-form").onclick = function () {
   document.getElementById("output-section").style.display = "none";
   clearErrorTips();
 };
-
-function clearErrorTips() {
-  ['topic','userRole','audience','platform','tone','format'].forEach(function(id){
-    document.getElementById("error-" + id).innerText = "";
-  });
-}
-
+function clearErrorTips() {['topic','userRole','audience','platform','tone','format'].forEach(function(id){document.getElementById("error-" + id).innerText = "";});}
 document.getElementById("prompt-form").onsubmit = function (e) {
   e.preventDefault();
-  // 取得欄位
   const topic = document.getElementById("topic").value.trim();
   const userRole = document.getElementById("userRole").value.trim();
   const audience = document.getElementById("audience").value.trim();
@@ -132,7 +108,6 @@ document.getElementById("prompt-form").onsubmit = function (e) {
   const format = document.getElementById("format").value;
   const group = document.getElementById("group").value.trim();
 
-  // 必填檢查
   let hasError = false;
   clearErrorTips();
   if (!topic) { document.getElementById("error-topic").innerText = "此為必填"; hasError=true; }
@@ -146,7 +121,6 @@ document.getElementById("prompt-form").onsubmit = function (e) {
   let prompt = "";
   let explanation = "";
   let usageTips = "";
-
   if (platform === "ChatGPT") {
     prompt = `你是${userRole}，請以「${tone}」的語氣，針對「${audience}」這個受眾，為主題「${topic}」撰寫一段${format}。${constraint ? "要求：" + constraint + "。" : ""}`;
     explanation = `此 Prompt 適合用於 ChatGPT，快速產生文案、故事、總結、對話、腳本、分析等。`;
@@ -160,28 +134,26 @@ document.getElementById("prompt-form").onsubmit = function (e) {
     explanation = `此 Prompt 適用於多種 AI 文字/圖片生成平台，快速組成專業需求。`;
     usageTips = `<b>最佳用法：</b> 用於多數 AI 工具（如 Notion AI、Copy.ai、Bing、Claude 等）。`;
   }
-
   prompt = beautifyPrompt(prompt);
+
   document.getElementById("output").value = prompt;
   document.getElementById("output").setAttribute('data-group', group);
   document.getElementById("explanation").innerHTML = explanation;
   document.getElementById("usage-tips").innerHTML = usageTips;
   document.getElementById("output-section").style.display = "block";
 };
-
-// 複製功能
+// 複製
 document.getElementById("copy-btn").onclick = function () {
   document.getElementById("output").select();
   document.execCommand("copy");
   showToast(document.getElementById("toast"));
 };
-
-// ==== Firestore 收藏（我的最愛） ====
-
+// ==== 我的最愛：需登入 ====
 // Firestore 儲存
 document.getElementById("save-btn").onclick = async function () {
   if (!auth.currentUser) {
-    alert('請先登入會員');
+    alert('收藏雲端功能僅限會員使用，請先登入！');
+    document.getElementById('showLogin').click();
     return;
   }
   const promptText = document.getElementById("output").value.trim();
@@ -200,35 +172,29 @@ document.getElementById("save-btn").onclick = async function () {
     alert("雲端收藏失敗：" + e.message);
   }
 };
-
-// Firestore 查詢我的最愛
+// Firestore 查詢
 async function getFavorites() {
   if (!auth.currentUser) return [];
   const favCol = collection(db, "users", auth.currentUser.uid, "favorites");
   const q = query(favCol, orderBy("date", "desc"));
   const snap = await getDocs(q);
   let arr = [];
-  snap.forEach(doc => {
-    arr.push({ ...doc.data(), id: doc.id });
-  });
+  snap.forEach(doc => { arr.push({ ...doc.data(), id: doc.id }); });
   return arr;
 }
-
 // Firestore 刪除
 async function deleteFavoriteCloud(id) {
   await deleteDoc(doc(db, "users", auth.currentUser.uid, "favorites", id));
   showToast(document.getElementById("toast-deleted"));
   await renderFavorites();
 }
-
 // Firestore 編輯
 async function editFavoriteCloud(id, newText) {
   await updateDoc(doc(db, "users", auth.currentUser.uid, "favorites", id), { text: newText });
   showToast(document.getElementById("toast-edited"));
   await renderFavorites();
 }
-
-// 匯出我的最愛
+// 匯出
 document.getElementById("export-btn").onclick = async function () {
   const favs = await getFavorites();
   if (!favs.length) return;
@@ -238,8 +204,7 @@ document.getElementById("export-btn").onclick = async function () {
   downloadFile(txt, "my_prompts.txt");
   showToast(document.getElementById("toast-export"));
 };
-
-// 分組渲染我的最愛
+// 分組渲染
 async function renderFavorites() {
   const favs = await getFavorites();
   const favoritesList = document.getElementById("favorites-list");
@@ -249,7 +214,6 @@ async function renderFavorites() {
   }
   document.getElementById("favorites-section").style.display = "";
   favoritesList.innerHTML = "";
-  // group by group
   const groupMap = {};
   favs.forEach(item => {
     const g = item.group && item.group.trim() ? item.group.trim() : "未分組";
@@ -282,8 +246,6 @@ async function renderFavorites() {
     });
     favoritesList.appendChild(groupDiv);
   });
-
-  // 複製
   favoritesList.querySelectorAll('.favorite-copy').forEach(btn => {
     btn.onclick = function () {
       const id = this.getAttribute("data-id");
@@ -294,14 +256,12 @@ async function renderFavorites() {
       }
     };
   });
-  // 刪除
   favoritesList.querySelectorAll('.favorite-delete').forEach(btn => {
     btn.onclick = function () {
       const id = this.getAttribute("data-id");
       deleteFavoriteCloud(id);
     };
   });
-  // 編輯
   favoritesList.querySelectorAll('.favorite-edit').forEach(btn => {
     btn.onclick = function () {
       const id = this.getAttribute("data-id");
@@ -315,7 +275,6 @@ async function renderFavorites() {
       p.querySelector(".favorite-cancel").style.display = "";
     };
   });
-  // 儲存
   favoritesList.querySelectorAll('.favorite-save').forEach(btn => {
     btn.onclick = function () {
       const id = this.getAttribute("data-id");
@@ -323,7 +282,6 @@ async function renderFavorites() {
       editFavoriteCloud(id, newText);
     };
   });
-  // 取消
   favoritesList.querySelectorAll('.favorite-cancel').forEach(btn => {
     btn.onclick = function () {
       const id = this.getAttribute("data-id");
@@ -338,12 +296,9 @@ async function renderFavorites() {
     };
   });
 }
-
 function showToast(element) {
   element.style.display = "block";
-  setTimeout(() => {
-    element.style.display = "none";
-  }, 1700);
+  setTimeout(() => { element.style.display = "none"; }, 1700);
 }
 function downloadFile(content, filename) {
   const blob = new Blob([content], { type: "text/plain" });
