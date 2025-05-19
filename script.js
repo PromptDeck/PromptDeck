@@ -1,4 +1,193 @@
-// 預設三種範本資料，可依需求再擴充
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, query,
+  orderBy, getDocs, deleteDoc, doc
+} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
+  authDomain: "promptdeck-8366f.firebaseapp.com",
+  projectId: "promptdeck-8366f",
+  storageBucket: "promptdeck-8366f.firebasestorage.app",
+  messagingSenderId: "1047872909519",
+  appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
+  measurementId: "G-QD99FJNSGH"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
+
+// ---- UI DOM ----
+const loginModal = document.getElementById('login-modal');
+const userDisplay = document.getElementById('user-display');
+const promptForm = document.getElementById('prompt-form');
+const outputSection = document.getElementById('output-section');
+const favoritesSection = document.getElementById('favorites-section');
+const toastDiv = document.getElementById('toast');
+
+// 會員狀態
+onAuthStateChanged(auth, user => {
+  renderUser(user);
+  if (user) renderFavorites();
+});
+
+// 渲染會員/登入按鈕
+function renderUser(user) {
+  if (user) {
+    userDisplay.innerHTML =
+      `<span class="user-mail">${user.email || user.displayName}</span>
+       <button id="logoutBtn" class="logout-btn">登出</button>`;
+    document.getElementById('logoutBtn').onclick = () => signOut(auth);
+    favoritesSection.style.display = 'block';
+  } else {
+    userDisplay.innerHTML = `<span class="login-link" id="showLogin">登入 / 註冊</span>`;
+    document.getElementById('showLogin').onclick = () => loginModal.classList.remove('hidden');
+    favoritesSection.style.display = 'none';
+  }
+}
+
+// 登入 Modal 控制
+document.getElementById('modal-close').onclick = () => loginModal.classList.add('hidden');
+window.onclick = e => { if (e.target === loginModal) loginModal.classList.add('hidden'); };
+
+// Google 登入
+document.getElementById('google-login').onclick = async () => {
+  try { await signInWithPopup(auth, provider); loginModal.classList.add('hidden'); }
+  catch (e) { showToast('Google 登入失敗'); }
+};
+
+// Email 註冊
+document.getElementById('registerForm').onsubmit = async e => {
+  e.preventDefault();
+  const email = e.target.regEmail.value;
+  const pw = e.target.regPassword.value;
+  try {
+    await createUserWithEmailAndPassword(auth, email, pw);
+    showToast('註冊成功'); loginModal.classList.add('hidden');
+  } catch (err) { showToast('註冊失敗：' + err.message); }
+};
+
+// Email 登入
+document.getElementById('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const email = e.target.loginEmail.value;
+  const pw = e.target.loginPassword.value;
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
+    showToast('登入成功'); loginModal.classList.add('hidden');
+  } catch (err) { showToast('登入失敗：' + err.message); }
+};
+
+// 產生 Prompt
+promptForm.onsubmit = function (e) {
+  e.preventDefault();
+  const topic = document.getElementById('topic').value.trim();
+  const audience = document.getElementById('audience').value.trim();
+  const platform = document.getElementById('platform').value;
+  const tone = document.getElementById('tone').value;
+  const constraint = document.getElementById('constraint').value.trim();
+  const format = document.getElementById('format').value;
+  let prompt = `請以${tone}風格，為「${audience}」設計主題「${topic}」的${format}`;
+  if (constraint) prompt += `（${constraint}）`;
+  prompt += `。\n（適用於 ${platform}）`;
+  document.getElementById('output').value = prompt;
+  outputSection.style.display = 'block';
+};
+
+// 複製 Prompt
+document.getElementById('copy-btn').onclick = () => {
+  const out = document.getElementById('output').value;
+  navigator.clipboard.writeText(out).then(()=>showToast('已複製到剪貼簿！'));
+};
+
+// 加入我的最愛
+document.getElementById('save-btn').onclick = async () => {
+  if (!auth.currentUser) {
+    showToast('請先登入會員才能收藏！');
+    document.getElementById('showLogin').click();
+    return;
+  }
+  const text = document.getElementById('output').value.trim();
+  const group = document.getElementById('group').value.trim();
+  if (!text) return showToast('無內容可收藏');
+  await addDoc(collection(db, 'users', auth.currentUser.uid, 'favorites'), {
+    text, group, created: Date.now()
+  });
+  showToast('已加入最愛！');
+  renderFavorites();
+};
+
+// 渲染我的最愛
+async function renderFavorites() {
+  if (!auth.currentUser) return;
+  const favs = [];
+  const snap = await getDocs(query(
+    collection(db, 'users', auth.currentUser.uid, 'favorites'),
+    orderBy('created', 'desc')
+  ));
+  snap.forEach(d => favs.push({ id: d.id, ...d.data() }));
+  const list = document.getElementById('favorites-list');
+  if (!favs.length) {
+    list.innerHTML = '<div style="color:var(--subtext);padding:1.5em;text-align:center;">尚無收藏，產生並收藏你第一個 Prompt 吧！</div>';
+    return;
+  }
+  list.innerHTML = favs.map(f =>
+    `<div class="favorite-card">
+      <div class="favorite-content">${f.text.replace(/\n/g, '<br>')}</div>
+      ${f.group ? `<div class="favorite-meta">分組：${f.group}</div>` : ''}
+      <div class="favorite-btns">
+        <button onclick="window.copyFav('${f.id}')">複製</button>
+        <button onclick="window.deleteFav('${f.id}')">刪除</button>
+      </div>
+    </div>`).join('');
+}
+window.copyFav = async id => {
+  const docSnap = await getDocs(query(collection(db, 'users', auth.currentUser.uid, 'favorites')));
+  let txt = "";
+  docSnap.forEach(d => { if (d.id === id) txt = d.data().text; });
+  if (txt) {
+    navigator.clipboard.writeText(txt);
+    showToast('已複製收藏');
+  }
+};
+window.deleteFav = async id => {
+  await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'favorites', id));
+  showToast('已刪除收藏');
+  renderFavorites();
+};
+
+// 匯出收藏
+document.getElementById('export-btn').onclick = async () => {
+  if (!auth.currentUser) return;
+  const favs = [];
+  const snap = await getDocs(query(
+    collection(db, 'users', auth.currentUser.uid, 'favorites'), orderBy('created', 'desc')
+  ));
+  snap.forEach(d => favs.push(d.data()));
+  if (!favs.length) return showToast('沒有收藏可匯出');
+  let txt = favs.map(f => `[${f.group ? '分組：'+f.group+' ' : ''}]${f.text}`).join('\n\n---\n\n');
+  const blob = new Blob([txt], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'promptdeck-favorites.txt';
+  a.click();
+  showToast('已匯出！');
+};
+
+// Toast
+function showToast(msg) {
+  toastDiv.textContent = msg;
+  toastDiv.className = 'toast show';
+  setTimeout(() => { toastDiv.className = 'toast'; }, 1600);
+}
+
+// ---- 快速範本套用 ----
 const templates = {
   creative_copy: {
     topic: "新產品上市活動亮點",
@@ -28,8 +217,6 @@ const templates = {
     group: "社群"
   }
 };
-
-// 快速範本套用
 document.getElementById('template-select').addEventListener('change', function() {
   const t = templates[this.value];
   if (t) {
@@ -42,35 +229,8 @@ document.getElementById('template-select').addEventListener('change', function()
     document.getElementById('group').value = t.group;
   }
 });
-
-// 清空表單
 document.getElementById('clear-form').addEventListener('click', function() {
-  document.getElementById('prompt-form').reset();
+  promptForm.reset();
   document.getElementById('template-select').value = '';
-});
-
-// 表單送出產生 prompt
-document.getElementById('prompt-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  // 驗證必填
-  let err = false;
-  ['topic','audience','platform','tone','format'].forEach(id=>{
-    if(!document.getElementById(id).value.trim()) err=true;
-  });
-  if (err) { alert('請填寫所有必填欄位'); return; }
-
-  // 取得值
-  const topic = document.getElementById('topic').value.trim();
-  const audience = document.getElementById('audience').value.trim();
-  const platform = document.getElementById('platform').value;
-  const tone = document.getElementById('tone').value;
-  const constraint = document.getElementById('constraint').value.trim();
-  const format = document.getElementById('format').value;
-  // 組合 prompt
-  let prompt = `請以${tone}風格，為「${audience}」設計一份主題為「${topic}」的${format}`;
-  if (constraint) prompt += `（${constraint}）`;
-  prompt += `。\n（適用於 ${platform}）`;
-
-  // 彈窗顯示（你可改為頁內輸出）
-  alert('推薦專業 Prompt：\n\n' + prompt);
+  outputSection.style.display = 'none';
 });
