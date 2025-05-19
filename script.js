@@ -9,7 +9,6 @@ import {
   orderBy, getDocs, deleteDoc, doc
 } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 
-// ---- 你的 firebaseConfig ----
 const firebaseConfig = {
   apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
   authDomain: "promptdeck-8366f.firebaseapp.com",
@@ -24,7 +23,6 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-// ---- UI DOM ----
 const loginModal = document.getElementById('login-modal');
 const userDisplay = document.getElementById('user-display');
 const promptForm = document.getElementById('prompt-form');
@@ -32,13 +30,12 @@ const outputSection = document.getElementById('output-section');
 const favoritesSection = document.getElementById('favorites-section');
 const toastDiv = document.getElementById('toast');
 
-// ---- 會員狀態監聽 ----
+// 會員狀態監聽
 onAuthStateChanged(auth, user => {
   renderUser(user);
   if (user) renderFavorites();
 });
 
-// ---- 渲染登入註冊 UI ----
 function renderUser(user) {
   if (user) {
     userDisplay.innerHTML =
@@ -53,7 +50,7 @@ function renderUser(user) {
   }
 }
 
-// ---- 登入彈窗控制 ----
+// 登入 Modal 控制
 document.getElementById('modal-close').onclick = () => loginModal.classList.add('hidden');
 window.onclick = e => { if (e.target === loginModal) loginModal.classList.add('hidden'); };
 
@@ -106,23 +103,42 @@ document.getElementById('copy-btn').onclick = () => {
   navigator.clipboard.writeText(out).then(()=>showToast('已複製到剪貼簿！'));
 };
 
+// 優化加入我的最愛
 document.getElementById('save-btn').onclick = async () => {
-  if (!auth.currentUser) {
-    showToast('請先登入會員才能收藏！');
-    document.getElementById('showLogin').click();
-    return;
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; // 避免連點
+  try {
+    if (!auth.currentUser) {
+      showToast('請先登入會員才能收藏！');
+      document.getElementById('showLogin').click();
+      btn.disabled = false;
+      return;
+    }
+    const text = document.getElementById('output').value.trim();
+    const group = document.getElementById('group').value.trim();
+    if (!text) {
+      showToast('無內容可收藏');
+      btn.disabled = false;
+      return;
+    }
+    // 檢查是否已存在完全相同的內容（可選擇要不要加這段）
+    // const snap = await getDocs(query(collection(db, 'users', auth.currentUser.uid, 'favorites'), where('text', '==', text)));
+    // if (!snap.empty) {
+    //   showToast('已經收藏過囉！');
+    //   btn.disabled = false;
+    //   return;
+    // }
+    await addDoc(collection(db, 'users', auth.currentUser.uid, 'favorites'), {
+      text, group, created: Date.now()
+    });
+    showToast('已加入最愛！');
+    renderFavorites();
+  } catch (err) {
+    showToast('收藏失敗：' + err.message);
   }
-  const text = document.getElementById('output').value.trim();
-  const group = document.getElementById('group').value.trim();
-  if (!text) return showToast('無內容可收藏');
-  await addDoc(collection(db, 'users', auth.currentUser.uid, 'favorites'), {
-    text, group, created: Date.now()
-  });
-  showToast('已加入最愛！');
-  renderFavorites();
+  btn.disabled = false;
 };
 
-// ---- 我的最愛（收藏/刪除/複製/匯出） ----
 async function renderFavorites() {
   if (!auth.currentUser) return;
   const favs = [];
@@ -130,6 +146,7 @@ async function renderFavorites() {
     collection(db, 'users', auth.currentUser.uid, 'favorites'),
     orderBy('created', 'desc')
   ));
+  favs.length = 0;
   snap.forEach(d => favs.push({ id: d.id, ...d.data() }));
   const list = document.getElementById('favorites-list');
   if (!favs.length) {
@@ -178,14 +195,14 @@ document.getElementById('export-btn').onclick = async () => {
   showToast('已匯出！');
 };
 
-// ---- Toast ----
+// Toast
 function showToast(msg) {
   toastDiv.textContent = msg;
   toastDiv.className = 'toast show';
   setTimeout(() => { toastDiv.className = 'toast'; }, 1600);
 }
 
-// ---- 快速範本 ----
+// 快速範本
 const templates = {
   creative_copy: {
     topic: "新產品上市活動亮點",
