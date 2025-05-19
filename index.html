@@ -9,29 +9,31 @@
 <body>
   <header>
     <div class="logo">PromptDeck</div>
-    <div class="login-button" id="loginBtn">登入</div>
+    <div id="user-display"></div>
   </header>
 
-  <!-- 會員登入區 -->
-  <div id="user-display"></div>
+  <!-- 會員登入區（未登入時顯示） -->
   <div id="login-section">
-    <h2>登入會員</h2>
-    <form id="loginForm">
-      <input type="email" id="loginEmail" placeholder="Email" required><br>
-      <input type="password" id="loginPassword" placeholder="密碼" required><br>
-      <button type="submit">登入</button>
-    </form>
-    <h3>註冊新會員</h3>
-    <form id="registerForm">
-      <input type="email" id="regEmail" placeholder="Email" required><br>
-      <input type="password" id="regPassword" placeholder="密碼" required><br>
-      <button type="submit">註冊</button>
-    </form>
+    <div class="card">
+      <h2>登入或註冊會員</h2>
+      <button id="google-login" class="google-btn">使用 Google 帳號登入</button>
+      <div class="hr-or"><span>或</span></div>
+      <form id="loginForm" autocomplete="off">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="密碼" required>
+        <button type="submit">登入</button>
+      </form>
+      <form id="registerForm" autocomplete="off">
+        <input type="email" id="regEmail" placeholder="Email" required>
+        <input type="password" id="regPassword" placeholder="密碼" required>
+        <button type="submit">註冊</button>
+      </form>
+    </div>
   </div>
 
-  <!-- 主應用內容（登入後才顯示） -->
-  <main id="main-app" class="generator" style="display:none;">
-    <h1>PromptDeck <span class="sub">（AI Prompt 組合、分組、雲端收藏）</span></h1>
+  <!-- 主應用內容（登入後顯示） -->
+  <main id="main-app" style="display:none;">
+    <h1>PromptDeck <span class="sub">AI Prompt 組合 × 我的雲端最愛</span></h1>
 
     <section class="template-section">
       <label for="template-select"><b>快速套用範本</b></label>
@@ -53,32 +55,22 @@
         <span class="required-label">* 主題內容：</span>
         <input type="text" id="topic" placeholder="如：新產品上市、教學腳本、社群貼文…" autocomplete="off" />
         <small>
-          請明確描述你想要產生的主題或情境（例如：「新產品上市」、「會議重點」、「創意文案」、「品牌故事」、「AI圖像指令」等）。<br>
-          你可以輸入：<br>
-          — 產品介紹（如「XXX新功能亮點」）<br>
-          — 主題式故事（如「AI時代的教育改變」）<br>
-          — 社群貼文或文案主題（如「母親節祝福短句」）<br>
-          — 教學內容（如「五分鐘自學Python」）<br>
-          — 行銷企劃、活動宣傳、設計指令<br>
-          — AI 圖像描述（如「日本街景插畫風」）<br>
-          建議盡量明確具體，效果最佳。
-          <span class="error-msg" id="error-topic"></span>
+          請明確描述你想要產生的主題或情境（例如：「新產品上市」、「會議重點」、「創意文案」、「品牌故事」、「AI圖像指令」等）。
+          你可以輸入：產品介紹、主題式故事、社群貼文、教學內容、行銷企劃、設計指令、AI圖像描述等。<span class="error-msg" id="error-topic"></span>
         </small>
       </label>
       <label>
         <span class="required-label">* 使用者角色：</span>
         <input type="text" id="userRole" placeholder="如：老師、行銷企劃、設計師..." autocomplete="off" />
         <small>
-          請說明這個 prompt 的「創作者身分」或「使用者角色」，如「國小老師」、「社群小編」、「專案經理」等。
-          <span class="error-msg" id="error-userRole"></span>
+          這個 prompt 的創作者身分（如「國小老師」、「社群小編」、「專案經理」等）。<span class="error-msg" id="error-userRole"></span>
         </small>
       </label>
       <label>
         <span class="required-label">* 目標受眾：</span>
         <input type="text" id="audience" placeholder="如：小學生、媽媽族群、職場新鮮人..." autocomplete="off" />
         <small>
-          你這組 prompt 想讓哪一群人閱讀、看到或互動？如「小學生」、「科技新手」、「運動愛好者」等。
-          <span class="error-msg" id="error-audience"></span>
+          這組 prompt 想讓哪一群人閱讀、看到或互動？（如「小學生」、「科技新手」、「運動愛好者」等）<span class="error-msg" id="error-audience"></span>
         </small>
       </label>
       <label>
@@ -89,11 +81,7 @@
           <option value="Midjourney">Midjourney</option>
           <option value="通用">通用/其他</option>
         </select>
-        <small>
-          你要把 prompt 用在哪個 AI 平台？如果不確定可以選「通用/其他」。<br>
-          例如 ChatGPT 文字內容、Midjourney 生成圖片、或其他 AI 工具皆可用。
-          <span class="error-msg" id="error-platform"></span>
-        </small>
+        <small>你要把 prompt 用在哪個 AI 平台？<span class="error-msg" id="error-platform"></span></small>
       </label>
       <label>
         <span class="required-label">* 語氣/風格：</span>
@@ -105,19 +93,12 @@
           <option value="啟發性">啟發性</option>
           <option value="品牌感">品牌感</option>
         </select>
-        <small>
-          希望 AI 產出的語氣，例如「專業」、「故事性」、「輕鬆」、「品牌感」、「啟發性」等。<br>
-          可根據不同使用情境調整（如：要幽默一點？還是學術一點？）。
-          <span class="error-msg" id="error-tone"></span>
-        </small>
+        <small>希望 AI 產出的語氣、風格。<span class="error-msg" id="error-tone"></span></small>
       </label>
       <label>
         限制條件（選填）：
         <input type="text" id="constraint" placeholder="如：條列、字數、必須引用數據…" autocomplete="off" />
-        <small>
-          如有特殊需求（如「200字內」、「條列」、「要有引用」、「不使用專有名詞」等），請填寫。<br>
-          如果沒有特別限制可以留空。
-        </small>
+        <small>如有特殊需求（如「200字內」、「條列」等），請填寫。</small>
       </label>
       <label>
         <span class="required-label">* 輸出格式：</span>
@@ -127,20 +108,12 @@
           <option value="詳細描述">詳細描述</option>
           <option value="腳本/多段">腳本/多段</option>
         </select>
-        <small>
-          希望 AI 產生哪種形式？<br>
-          「簡短描述」：適合一句話、短文案、口號等。<br>
-          「詳細描述」：適合完整介紹、長文內容、報告等。<br>
-          「腳本/多段」：適合劇本、逐步教學、多段落內容。
-          <span class="error-msg" id="error-format"></span>
-        </small>
+        <small>希望 AI 產生哪種形式？<span class="error-msg" id="error-format"></span></small>
       </label>
       <label>
         收藏分組（選填）：
         <input type="text" id="group" placeholder="如：工作、學習、圖像、創意…" autocomplete="off" />
-        <small>
-          收藏時可為此 prompt 加上自訂分組（如「學習」、「Midjourney 圖像」、「品牌文案」等），方便管理與搜尋。
-        </small>
+        <small>為此 prompt 加上自訂分組，方便管理。</small>
       </label>
       <button type="submit">產生專業 Prompt</button>
     </form>
@@ -149,21 +122,21 @@
       <h2>🎉 產生結果</h2>
       <textarea id="output" rows="7" readonly></textarea>
       <button id="copy-btn" type="button">複製 Prompt</button>
-      <button id="save-btn" type="button">收藏（雲端）</button>
+      <button id="save-btn" type="button">加入我的最愛</button>
       <div class="explanation" id="explanation"></div>
       <div class="usage-tips" id="usage-tips"></div>
     </section>
 
     <section id="favorites-section" class="favorites-section" style="display:none;">
       <div class="favorites-header">
-        <h2>⭐ 我的雲端收藏</h2>
-        <button id="export-btn" type="button">一鍵匯出全部</button>
+        <h2>⭐ 我的最愛（雲端收藏）</h2>
+        <button id="export-btn" type="button">一鍵匯出</button>
       </div>
       <div id="favorites-list"></div>
     </section>
 
     <div class="toast" id="toast">已複製到剪貼簿！</div>
-    <div class="toast" id="toast-saved">已加入雲端收藏！</div>
+    <div class="toast" id="toast-saved">已加入最愛！</div>
     <div class="toast" id="toast-deleted">已刪除收藏！</div>
     <div class="toast" id="toast-edited">已儲存編輯！</div>
     <div class="toast" id="toast-export">已匯出收藏！</div>
