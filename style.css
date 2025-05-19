@@ -104,4 +104,70 @@ body {
 .favorite-btns {
   display:flex; gap:0.6em; margin-top:0.4em;
 }
-.favor
+.favorite-btns button {
+  background:var(--gray); color:var(--primary); border:none;
+  border-radius:13px; padding:0.4em 1.2em; font-size:0.99em; cursor:pointer;
+  transition:background 0.12s;
+}
+.favorite-btns button:hover { background:var(--blue); color:#fff;}
+.btn-export {
+  width:100%; padding:0.85em; margin-top:1.3em;
+  background:transparent; color:var(--blue); border:2px solid var(--blue);
+  border-radius:20px; font-size:1.1em; font-weight:700; cursor:pointer;
+  transition:background 0.13s, color 0.13s;
+}
+.btn-export:hover { background:var(--blue); color:#fff;}
+/* 登入 Modal */
+.modal {
+  position:fixed; inset:0; background:rgba(0,0,0,0.13);
+  display:flex; align-items:center; justify-content:center; z-index:50;
+}
+.modal.hidden { display:none; }
+.modal-content {
+  background: var(--card-bg); padding:2em 1.3em 1.5em 1.3em; border-radius: 26px;
+  width:94vw; max-width:345px; position:relative; box-shadow:0 8px 36px rgba(0,0,0,0.09);
+}
+.modal-close {
+  position:absolute; top:1em; right:1em;
+  font-size:1.35rem; cursor:pointer; color:var(--subtext);
+}
+.btn-google {
+  width:100%; padding:0.85em; background:#007aff;
+  color:#fff; border:none; border-radius:20px;
+  font-weight:600; font-size:1.04em;
+}
+.divider { text-align:center; margin:1.25em 0 0.95em 0; color:var(--subtext); }
+.divider span { background:var(--card-bg); padding:0 8px;}
+.auth-form {
+  display:flex; flex-direction:column; gap:0.65em;
+}
+.auth-form input { margin-bottom:0.9em; }
+.btn-outline {
+  padding:0.89em; border:2px solid var(--blue);
+  color: var(--blue); border-radius:19px;
+  background: transparent; font-weight:600; font-size:1.05em;
+  margin-top:0.7em;
+}
+.btn-outline:hover { background:var(--blue); color:#fff;}
+.toast {
+  display:none; position:fixed; left:50%; bottom:56px; transform:translateX(-50%);
+  background:#222; color:#fff; padding:1em 2.2em; border-radius:2em;
+  font-size:1.08em; z-index:200; letter-spacing:1.2px; font-weight:600;
+  box-shadow:0 4px 20px rgba(0,0,0,0.12);
+  animation:fadein 0.15s, fadeout 0.8s 1.2s;
+}
+.toast.show { display:block; }
+.footer {
+  text-align:center; padding:2.6em 0 1em 0; color: var(--subtext); font-size:1.05em;
+  letter-spacing:1px;
+}
+@media (max-width:540px) {
+  .main-container { max-width:100%; }
+  .card { padding:1.1em 0.3em 1.1em 0.3em; }
+}
+@media (max-width:400px) {
+  .header { padding:0.7em 0.5em;}
+  .card { padding:0.3em 0.05em 0.9em 0.05em;}
+}
+@keyframes fadein { from { opacity:0;} to {opacity:1;} }
+@keyframes fadeout { to {opacity:0;} }
