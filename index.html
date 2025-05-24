@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PromptDeck - AI Prompt 產生器</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PromptDeck - AI 助理型 Prompt 產生器</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -14,7 +14,18 @@
   </header>
 
   <main class="main-container">
-    <p class="context-note">（多情境分組收藏）</p>
+    <section id="welcome-area" class="welcome-area"></section>
+
+    <section id="onboarding-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>打造你的專屬 AI 助理</h2>
+        <div id="onboarding-step"></div>
+        <div id="onboarding-controls"></div>
+      </div>
+    </section>
+
+    <section id="assistant-bubble" class="assistant-bubble"></section>
+
     <section class="template-header">
       <label for="template-select">快速套用範本</label>
       <select id="template-select">
@@ -22,30 +33,41 @@
         <option value="creative_copy">創意文案</option>
         <option value="lesson_plan">教學腳本</option>
         <option value="social_post">社群貼文</option>
+        <option value="product_review">產品開箱心得</option>
+        <option value="event_invite">活動邀請文</option>
+        <option value="faq_support">FAQ 客服自動回覆</option>
+        <option value="resume_bio">履歷自傳生成</option>
+        <option value="ad_headline">廣告標題激發</option>
+        <option value="midjourney_art">Midjourney 圖像描述</option>
+        <option value="newsletter">電子報開頭段落</option>
       </select>
       <button id="clear-form" type="button">清空</button>
     </section>
 
     <section class="card">
       <form id="prompt-form" class="form">
+        <label for="goal"><span class="required">*</span> 今天的目標：</label>
+        <select id="goal" required>
+          <option value="">請選擇目標</option>
+          <option value="激發創意">激發創意</option>
+          <option value="效率工作">效率工作</option>
+          <option value="品牌塑造">品牌塑造</option>
+          <option value="學習成長">學習成長</option>
+          <option value="趣味互動">趣味互動</option>
+        </select>
+        <small>每次不同目標都會帶給你不同 AI 驚喜 ✨</small>
+
         <label for="topic"><span class="required">*</span> 主題內容：</label>
         <input type="text" id="topic" placeholder="如：新產品上市、教學腳本、社群貼文…" required>
-        <small>
-          請明確描述想要產生的主題或情境（例如：「新產品上市」、「會議重點」、「品牌故事」、「AI 圖像指令」等）。<br>
-          你可以輸入：產品介紹、主題式故事、社群貼文主題、教學內容、行銷創意、活動標語、設計指令等，愈明確愈佳。
-        </small>
+        <small>明確描述想要產生的主題或情境。</small>
 
         <label for="userRole"><span class="required">*</span> 使用者角色：</label>
         <input type="text" id="userRole" placeholder="如：社群小編、設計師…" required>
-        <small>
-          這組 Prompt 是由什麼身份的人來操作？（例如：「社群小編」、「產品經理」、「設計師」、「老師」…）
-        </small>
+        <small>這組 Prompt 是由什麼身份的人來操作？</small>
 
         <label for="audience"><span class="required">*</span> 目標受眾：</label>
         <input type="text" id="audience" placeholder="如：25-35歲女性、國高中生…" required>
-        <small>
-          這組內容要給誰看？（例如：「25-35歲女性」、「在校學生」、「小資上班族」…）
-        </small>
+        <small>這組內容要給誰看？</small>
 
         <label for="platform"><span class="required">*</span> 使用平台：</label>
         <select id="platform" required>
@@ -54,7 +76,7 @@
           <option value="Midjourney">Midjourney</option>
           <option value="通用">通用 / 其他</option>
         </select>
-        <small>你要把 prompt 用在哪個 AI 平台？不確定可選「通用 / 其他」。</small>
+        <small>你要把 prompt 用在哪個 AI 平台？</small>
 
         <label for="tone"><span class="required">*</span> 語氣 / 風格：</label>
         <select id="tone" required>
@@ -64,12 +86,18 @@
           <option value="詩意">詩意</option>
           <option value="啟發性">啟發性</option>
           <option value="品牌感">品牌感</option>
+          <option value="激勵">激勵</option>
+          <option value="溫馨">溫馨</option>
         </select>
-        <small>希望 AI 產出什麼語氣？如「專業」、「品牌感」、「輕鬆」、「詩意」等，可依需求調整。</small>
+        <small>希望 AI 產出什麼語氣？</small>
 
         <label for="constraint">限制條件（選填）：</label>
         <input type="text" id="constraint" placeholder="如：條列、字數、必須引用數據…">
-        <small>有特殊需求（如「200字內」、「要有引用」、「不使用專有名詞」等）請填寫。</small>
+        <small>有特殊需求請填寫。</small>
+
+        <label for="reference">引用資料（選填）：</label>
+        <input type="text" id="reference" placeholder="如：2023產業報告、官網數據…">
+        <small>有特別想讓 AI 參考的資料或來源可填寫。</small>
 
         <label for="format"><span class="required">*</span> 輸出格式：</label>
         <select id="format" required>
@@ -78,18 +106,19 @@
           <option value="詳細描述">詳細描述</option>
           <option value="腳本/多段">腳本 / 多段</option>
         </select>
-        <small>希望 AI 產生哪種形式？如「簡短描述」適合一句話、「腳本/多段」適合教學。</small>
+        <small>希望 AI 產生哪種形式？</small>
 
         <label for="group">收藏分組（選填）：</label>
         <input type="text" id="group" placeholder="如：工作、學習、圖像、創意…">
         <small>收藏時可為此 prompt 加上自訂分組，方便管理與搜尋。</small>
 
-        <button type="submit" class="btn-submit">產生專業 Prompt</button>
+        <button type="submit" class="btn-submit">產生專屬 AI Prompt</button>
       </form>
 
       <section id="output-section" class="output-section" style="display:none;">
         <label for="output"><b>產生結果：</b></label>
         <textarea id="output" rows="6" readonly></textarea>
+        <div id="dynamic-feedback" class="dynamic-feedback"></div>
         <div class="output-actions">
           <button id="copy-btn" class="btn-secondary">複製</button>
           <button id="save-btn" class="btn-secondary">加入我的最愛</button>
@@ -105,7 +134,6 @@
     </section>
   </main>
 
-  <!-- 只剩 Google 登入！ -->
   <div id="login-modal" class="modal hidden">
     <div class="modal-content">
       <span id="modal-close" class="modal-close">&times;</span>
