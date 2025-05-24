@@ -5,6 +5,7 @@
   --bg: #f6f6fa;
   --card: #fff;
   --radius: 1.5em;
+  --danger: #f43131;
 }
 html, body {
   font-family: 'Inter', 'PingFang TC', 'Noto Sans TC', sans-serif;
@@ -51,6 +52,8 @@ html, body {
 .form label { margin-top: 0.5em; font-weight: 600; font-size: 1.05em; display: block; }
 .form input, .form select, .form textarea {
   width: 100%;
+  display: block;
+  box-sizing: border-box;
   margin-top: 0.3em;
   margin-bottom: 0.4em;
   padding: 0.8em 1em;
@@ -58,11 +61,13 @@ html, body {
   border: 1px solid #dde1e9;
   background: #f6faff;
   font-size: 1.04em;
-  transition: border 0.18s;
+  transition: border 0.18s, box-shadow 0.18s;
 }
 .form input:focus, .form select:focus, .form textarea:focus {
   outline: none;
-  border: 1.3px solid var(--main);
+  border: 1.5px solid var(--main);
+  background: #f2f9ff;
+  box-shadow: 0 0 0 1.5px var(--main)22;
 }
 .form small {
   color: var(--subtext);
@@ -71,7 +76,7 @@ html, body {
   font-size: 0.98em;
   line-height: 1.5;
 }
-.required { color: #f43131; font-weight: bold; }
+.required { color: var(--danger); font-weight: bold; }
 .btn-submit {
   background: var(--main);
   color: #fff;
@@ -92,9 +97,17 @@ html, body {
   margin-top: 1.6em;
 }
 .output-section textarea {
-  width: 100%; font-size: 1.07em; background: #f8faff; border-radius: 1.2em;
-  padding: 1.1em 1em; border: 1.1px solid #dde1e9; margin-bottom: 0.6em;
-  min-height: 5.5em; resize: none;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  font-size: 1.07em;
+  background: #f8faff;
+  border-radius: 1.2em;
+  padding: 1.1em 1em;
+  border: 1.1px solid #dde1e9;
+  margin-bottom: 0.6em;
+  min-height: 5.5em;
+  resize: none;
 }
 .output-actions {
   display: flex; gap: 1em; margin-bottom: 0.6em;
