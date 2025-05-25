@@ -262,24 +262,12 @@ document.getElementById('clear-form').onclick = () => {
 document.getElementById('prompt-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const get = id => document.getElementById(id).value.trim();
-  let prompt = 
-`【今日目標】${get('goal')}
-【主題內容】${get('topic')}
-【操作角色】${get('userRole')}
-【目標受眾】${get('audience')}
-【使用平台】${get('platform')}
-【語氣風格】${get('tone')}
-【限制條件】${get('constraint')}
-${get('reference') ? '【引用資料】' + get('reference') : ''}
-【輸出格式】${get('format')}
+let prompt = 
+`請以「${get('tone')}」的語氣，針對「${get('audience')}」，在「${get('platform')}」上，以「${get('format')}」方式，撰寫關於「${get('topic')}」的內容。
+身份角色為「${get('userRole')}」，目標是「${get('goal')}」。
+${get('constraint') ? "請注意：" + get('constraint') : ""}
+${get('reference') ? "可參考資料：" + get('reference') : ""}`;
 
-請根據以上資訊，結構化地為我生成高價值、高可讀性的 AI Prompt，請分段落、條列、重點說明：
-1. 首段請「簡述主題與目標」並呼應受眾需求
-2. 中段請「具體分段列出行動建議、策略、內容要素」
-3. 如有引用資料請整合引用
-4. 結尾請給出一句具啟發或鼓勵性的結語
-5. 內容務必精緻、詳盡，避免只有一兩句話
-`;
 
   document.getElementById('output').value = prompt;
   document.getElementById('output-section').style.display = '';
