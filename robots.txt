@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://promptdeck.github.io/PromptDeck/sitemap.xml
