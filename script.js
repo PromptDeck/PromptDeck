@@ -1,8 +1,9 @@
-// --- Firebase 基本設定 --- //
+// --------- Firebase 基本設定 ---------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
 
+// -- 請將 config 換成你自己的 firebase 設定 --
 const firebaseConfig = {
   apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
   authDomain: "promptdeck-8366f.firebaseapp.com",
@@ -16,13 +17,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// --- 狀態管理 --- //
-let currentUser = null;
-let userFavorites = [];
-let favoritesCache = [];
-let lastPrompt = null;
-
-// --- 範本（含 goal 與預設內容） --- //
+// --------- 範本內容 ---------
 const templates = {
   b2b_intro_mail: {
     goal: "效率工作",
@@ -180,13 +175,63 @@ const templates = {
   }
 };
 
-// --- 高價值專業 Prompt 產生器 --- //
+// --------- 狀態 ---------
+let currentUser = null;
+let userFavorites = [];
+let favoritesCache = [];
+let lastPrompt = null;
+
+const FIELD_IDS = [
+  'goal', 'topic', 'userRole', 'audience', 'platform', 'tone',
+  'constraint', 'reference', 'format', 'group'
+];
+
+// --------- 表單欄位啟用/鎖定 ---------
+function setAllFormFieldsEnabled(enabled) {
+  FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = !enabled;
+  });
+  document.querySelectorAll('.btn-submit').forEach(btn => btn.disabled = !enabled);
+}
+
+// --------- 範本套用流程 ---------
+function setupTemplateSelection() {
+  const select = document.getElementById('template-select');
+  select.onchange = function() {
+    // 1. 清空全部欄位
+    FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    setAllFormFieldsEnabled(false);
+    // 2. 選到範本才帶入並啟用
+    const type = select.value;
+    if (!type || !templates[type]) return;
+    Object.entries(templates[type]).forEach(([k, v]) => {
+      if (document.getElementById(k)) document.getElementById(k).value = v;
+    });
+    if (templates[type].goal && document.getElementById('goal')) {
+      document.getElementById('goal').value = templates[type].goal;
+    }
+    setAllFormFieldsEnabled(true);
+    if (document.getElementById('topic')) document.getElementById('topic').focus();
+  };
+}
+
+// --------- 表單清空 ---------
+document.getElementById('clear-form').onclick = function() {
+  document.getElementById('prompt-form').reset();
+  setAllFormFieldsEnabled(false);
+  document.getElementById('template-select').value = '';
+  document.getElementById('output-section').style.display = 'none';
+};
+
+// --------- 高價值 Prompt 產生 ---------
 function generateHighValuePrompt(inputs, templateType = "") {
   let minTotalLength = 350; // 字數要求
   let structure = [];
   let extraSections = [];
-
-  // 不同範本結構
   switch (templateType) {
     case "b2b_intro_mail":
       structure = [
@@ -232,7 +277,6 @@ function generateHighValuePrompt(inputs, templateType = "") {
       break;
   }
 
-  // 進階提示
   if (inputs.constraint) extraSections.push("請務必遵守以下限制：" + inputs.constraint);
   if (inputs.reference) extraSections.push("請適當引用或整合以下資料來源：" + inputs.reference);
   if (inputs.format) extraSections.push("輸出格式採用【" + inputs.format + "】，請分段條列、層次分明。");
@@ -250,71 +294,7 @@ ${extraSections.join('\n')}
   `.trim();
 }
 
-// --- 登入與登出 --- //
-const loginModal = document.getElementById('login-modal');
-const userDisplay = document.getElementById('user-display');
-const googleLoginBtn = document.getElementById('google-login');
-const modalCloseBtn = document.getElementById('modal-close');
-const toast = document.getElementById('toast');
-
-document.addEventListener('DOMContentLoaded', () => {
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      currentUser = user;
-      userDisplay.innerHTML = `<span>${user.email}</span><button id="logout-btn">登出</button>`;
-      document.getElementById('favorites-section').style.display = 'block';
-      await loadFavorites();
-      document.getElementById('welcome-area').innerHTML = `<div class="welcome-message">👋 歡迎回來，${user.displayName || user.email}！</div>`;
-      setLogoutHandler();
-    } else {
-      currentUser = null;
-      userFavorites = [];
-      favoritesCache = [];
-      userDisplay.innerHTML = `<button id="login-btn">登入 / 註冊</button>`;
-      document.getElementById('favorites-section').style.display = 'none';
-      document.getElementById('welcome-area').innerHTML = `<div class="welcome-message">✍️ 立即註冊收藏你的雲端最愛，跨裝置同步！</div>`;
-      setLoginHandler();
-    }
-  });
-
-  setLoginHandler();
-  initForm();
-  setupTemplateSelection();
-  setupFeedbackForm();
-});
-
-function setLoginHandler() {
-  const loginBtn = document.getElementById('login-btn');
-  if (loginBtn) {
-    loginBtn.onclick = () => {
-      loginModal.classList.remove('hidden');
-    };
-  }
-  googleLoginBtn.onclick = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      loginModal.classList.add('hidden');
-    } catch (err) {
-      showToast("登入失敗，請檢查瀏覽器是否支援 Google 登入！");
-    }
-  };
-  modalCloseBtn.onclick = () => {
-    loginModal.classList.add('hidden');
-  };
-}
-
-function setLogoutHandler() {
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.onclick = async () => {
-      await signOut(auth);
-      showToast("已登出");
-    };
-  }
-}
-
-// --- 表單初始化、提交、快速帶入 --- //
+// --------- 表單送出 ---------
 function initForm() {
   const form = document.getElementById('prompt-form');
   const outputSection = document.getElementById('output-section');
@@ -322,7 +302,6 @@ function initForm() {
   const copyBtn = document.getElementById('copy-btn');
   const saveBtn = document.getElementById('save-btn');
   const saveMessage = document.getElementById('save-message');
-  const clearBtn = document.getElementById('clear-form');
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -380,30 +359,9 @@ function initForm() {
       showToast("收藏失敗，請稍後再試");
     }
   };
-
-  clearBtn.onclick = function() {
-    form.reset();
-    outputSection.style.display = 'none';
-    lastPrompt = null;
-  };
 }
 
-function setupTemplateSelection() {
-  const select = document.getElementById('template-select');
-  select.onchange = function() {
-    const type = select.value;
-    if (!type || !templates[type]) return;
-    Object.entries(templates[type]).forEach(([k, v]) => {
-      if (document.getElementById(k)) document.getElementById(k).value = v;
-    });
-    // 自動帶入 goal
-    if (templates[type].goal && document.getElementById('goal')) {
-      document.getElementById('goal').value = templates[type].goal;
-    }
-  };
-}
-
-// --- 動態 AI 回饋 --- //
+// --------- 動態 AI 回饋 ---------
 function getRandomAiFeedback() {
   const feedbackList = [
     "🤖 AI小秘書：這份 prompt 很棒，建議再加入一個案例會更豐富！",
@@ -416,7 +374,7 @@ function getRandomAiFeedback() {
   return feedbackList[Math.floor(Math.random() * feedbackList.length)];
 }
 
-// --- 雲端我的最愛 --- //
+// --------- 我的最愛收藏 ---------
 async function loadFavorites() {
   if (!currentUser) return;
   const favoritesList = document.getElementById('favorites-list');
@@ -476,19 +434,82 @@ function renderFavorites() {
   });
 }
 
-// --- 實用小函式 --- //
-function showToast(msg) {
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 1800);
-}
-
 function formatDateTime(ts) {
   let d = (ts instanceof Date) ? ts : (ts?.toDate ? ts.toDate() : new Date());
   return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
 }
 
-// --- 留言板 --- //
+// --------- 匯出收藏 ---------
+document.getElementById('export-btn').onclick = function() {
+  if (!userFavorites.length) {
+    showToast("目前沒有收藏可匯出");
+    return;
+  }
+  let allText = userFavorites.map(f => f.prompt).join('\n\n---\n\n');
+  const blob = new Blob([allText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = "PromptDeck_Favorites.txt";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// --------- 登入流程 ---------
+const userDisplay = document.getElementById('user-display');
+const loginModal = document.getElementById('login-modal');
+const googleLoginBtn = document.getElementById('google-login');
+const modalClose = document.getElementById('modal-close');
+let showToastTimeout = null;
+
+function updateUserDisplay() {
+  if (currentUser) {
+    userDisplay.innerHTML = `
+      <span style="margin-right:8px;">${currentUser.displayName || currentUser.email}</span>
+      <button id="logout-btn" class="btn-secondary">登出</button>
+      <button id="show-favorites" class="btn-secondary">我的最愛</button>
+    `;
+    document.getElementById('logout-btn').onclick = async function() {
+      await signOut(auth);
+      showToast("已登出");
+    };
+    document.getElementById('show-favorites').onclick = function() {
+      document.getElementById('favorites-section').style.display = "block";
+      loadFavorites();
+    };
+  } else {
+    userDisplay.innerHTML = `<button id="login-btn" class="btn-secondary">會員登入</button>`;
+    document.getElementById('login-btn').onclick = function() {
+      loginModal.classList.remove('hidden');
+    };
+    document.getElementById('favorites-section').style.display = "none";
+  }
+}
+
+googleLoginBtn.onclick = async function() {
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    loginModal.classList.add('hidden');
+  } catch (err) {
+    showToast("登入失敗，請重試或更換瀏覽器");
+  }
+};
+
+modalClose.onclick = function() {
+  loginModal.classList.add('hidden');
+};
+
+// 監控登入狀態
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  updateUserDisplay();
+  if (user) {
+    await loadFavorites();
+  }
+});
+
+// --------- 留言 ---------
 function setupFeedbackForm() {
   const feedbackForm = document.getElementById('feedback-form');
   if (!feedbackForm) return;
@@ -505,3 +526,21 @@ function setupFeedbackForm() {
     showToast('已收到留言，感謝您的建議！');
   };
 }
+
+// --------- 動態提示 ---------
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(showToastTimeout);
+  showToastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// --------- 初始化 ---------
+document.addEventListener('DOMContentLoaded', () => {
+  setAllFormFieldsEnabled(false);
+  setupTemplateSelection();
+  initForm();
+  setupFeedbackForm();
+  updateUserDisplay();
+});
