@@ -540,3 +540,39 @@ function checkAndUnlockAchievements(profile) {
     }
   });
 }
+
+// ...（前面為你原本的 script.js 全內容）...
+
+// === 用戶留言功能 ===
+const feedbackForm = document.getElementById('feedback-form');
+const feedbackMsgDiv = document.getElementById('feedback-success');
+
+if (feedbackForm) {
+  feedbackForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('feedback-message').value.trim();
+    if (!msg) {
+      feedbackMsgDiv.textContent = "請填寫留言內容";
+      return;
+    }
+    if (!auth.currentUser) {
+      feedbackMsgDiv.textContent = "請先登入會員才能留言！";
+      return;
+    }
+    // 留言寫入 Firestore
+    try {
+      await addDoc(collection(db, "feedbacks"), {
+        uid: auth.currentUser.uid,
+        email: auth.currentUser.email,
+        message: msg,
+        created: Date.now()
+      });
+      feedbackMsgDiv.textContent = "感謝您的留言與回饋！";
+      feedbackForm.reset();
+      setTimeout(() => { feedbackMsgDiv.textContent = ""; }, 2000);
+    } catch (e) {
+      feedbackMsgDiv.textContent = "留言失敗，請稍後再試。";
+    }
+  });
+}
+
