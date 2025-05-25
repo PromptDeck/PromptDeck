@@ -3,7 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PromptDeck - AI 助理型 Prompt 產生器</title>
+  <title>PromptDeck — AI Prompt 產生器、收藏與雲端管理工具</title>
+  <meta name="description" content="PromptDeck 是專為創作者設計的 AI Prompt 產生器，支援自動化、範本套用、雲端收藏與個人化互動，讓你輕鬆管理與生成高質感 Prompt。">
+  <meta name="keywords" content="AI, Prompt, Prompt Generator, 產生器, ChatGPT, Midjourney, 收藏, 雲端, 生成式AI, 社群, 文案, 創意, 自動化, SEO">
+  <meta name="author" content="PromptDeck Team">
+  <meta name="robots" content="index,follow">
+  <!-- Open Graph 分享標籤 -->
+  <meta property="og:title" content="PromptDeck — AI Prompt 產生器" />
+  <meta property="og:description" content="你的 AI Prompt 管理與產生神器，立即體驗個人化互動！" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://promptdeck.github.io/PromptDeck/" />
+  <!-- 未來如有圖片可加下行 -->
+  <!-- <meta property="og:image" content="https://promptdeck.github.io/PromptDeck/og_image.png" /> -->
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -16,6 +27,7 @@
   <main class="main-container">
     <section id="welcome-area" class="welcome-area"></section>
 
+    <!-- Onboarding Modal（如有需要） -->
     <section id="onboarding-modal" class="modal hidden">
       <div class="modal-content">
         <h2>打造你的專屬 AI 助理</h2>
@@ -26,6 +38,7 @@
 
     <section id="assistant-bubble" class="assistant-bubble"></section>
 
+    <!-- 範本選擇區 -->
     <section class="template-header">
       <label for="template-select">快速套用範本</label>
       <select id="template-select">
@@ -44,6 +57,7 @@
       <button id="clear-form" type="button">清空</button>
     </section>
 
+    <!-- 主要 Prompt 產生卡片 -->
     <section class="card">
       <form id="prompt-form" class="form">
         <label for="goal"><span class="required">*</span> 今天的目標：</label>
@@ -131,6 +145,17 @@
       <h2>⭐ 我的雲端最愛</h2>
       <div id="favorites-list"></div>
       <button id="export-btn" class="btn-export">一鍵匯出全部收藏</button>
+    </section>
+
+    <!-- 用戶留言區塊 -->
+    <section id="feedback-section" class="card">
+      <h2>💬 用戶留言/建議</h2>
+      <form id="feedback-form" class="form">
+        <label for="feedback-message"><span class="required">*</span> 您的留言：</label>
+        <textarea id="feedback-message" required placeholder="歡迎留下您的建議或回饋..."></textarea>
+        <button type="submit" class="btn-submit">送出留言</button>
+      </form>
+      <div id="feedback-success" class="save-message"></div>
     </section>
   </main>
 
