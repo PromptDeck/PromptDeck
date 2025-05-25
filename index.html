@@ -12,141 +12,130 @@
   <meta property="og:description" content="你的 AI Prompt 管理與產生神器，立即體驗個人化互動！" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://promptdeck.github.io/PromptDeck/" />
-  <!-- Google AdSense 自動廣告 -->
+  <!-- <meta property="og:image" content="https://promptdeck.github.io/PromptDeck/og_image.png" /> -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4132904286933531"
      crossorigin="anonymous"></script>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
+  <!-- Firebase JS SDK (改成你的版本即可) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-    window._firebaseInit = () => {
-      const firebaseConfig = {
-        apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
-        authDomain: "promptdeck-8366f.firebaseapp.com",
-        projectId: "promptdeck-8366f",
-        storageBucket: "promptdeck-8366f.firebasestorage.app",
-        messagingSenderId: "1047872909519",
-        appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
-        measurementId: "G-QD99FJNSGH"
-      };
-      window._app = initializeApp(firebaseConfig);
-      window._auth = getAuth();
-      window._db = getFirestore();
-      window._GoogleAuthProvider = GoogleAuthProvider;
-      window._signInWithPopup = signInWithPopup;
-      window._signOut = signOut;
-      window._onAuthStateChanged = onAuthStateChanged;
-      window._collection = collection;
-      window._addDoc = addDoc;
-      window._getDocs = getDocs;
-      window._query = query;
-      window._where = where;
-      window._orderBy = orderBy;
-      window._deleteDoc = deleteDoc;
-      window._doc = doc;
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    window._firebaseConfig = {
+      apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
+      authDomain: "promptdeck-8366f.firebaseapp.com",
+      projectId: "promptdeck-8366f",
+      storageBucket: "promptdeck-8366f.firebasestorage.app",
+      messagingSenderId: "1047872909519",
+      appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
+      measurementId: "G-QD99FJNSGH"
     };
+    const app = initializeApp(window._firebaseConfig);
+    window._db = getFirestore(app);
+    window._auth = getAuth(app);
+    window._GoogleAuthProvider = GoogleAuthProvider;
+    window._signInWithPopup = signInWithPopup;
+    window._onAuthStateChanged = onAuthStateChanged;
+    window._signOut = signOut;
+    window._collection = collection;
+    window._addDoc = addDoc;
+    window._getDocs = getDocs;
+    window._query = query;
+    window._where = where;
+    window._orderBy = orderBy;
+    window._deleteDoc = deleteDoc;
+    window._doc = doc;
   </script>
 </head>
 <body>
   <header class="header">
     <div class="logo">PromptDeck</div>
     <div id="user-display" class="user-display">
-      <button id="login-btn">登入 / 註冊</button>
       <span id="user-email" style="display:none"></span>
-      <button id="logout-btn" style="display:none">登出</button>
+      <button id="login-btn" type="button">登入 / 註冊</button>
+      <button id="logout-btn" style="display:none;" type="button">登出</button>
     </div>
   </header>
   <main class="main-container">
-    <section class="template-header highlight-step" id="step-highlight">
+    <!-- SEO 主標題/說明 -->
+    <section class="intro-section">
+      <h1>PromptDeck — AI Prompt 產生器、收藏與雲端管理神器</h1>
+      <p>
+        PromptDeck 是專為創作者、行銷人、社群經營者與 AI 愛好者打造的 Prompt 產生工具，
+        提供多種應用範本、客製化互動、雲端收藏、快速複製等功能，助你輕鬆管理與優化各種 AI 指令。
+      </p>
+    </section>
+    <!-- 引導式 step 強調 -->
+    <section class="template-header highlight-step">
       <div class="template-guide">
-        <span class="step-icon">🟡</span>
-        <b>步驟 1</b>：<span class="highlight">請先從下方「快速套用範本」選擇一個情境</span>，開始產生您的專屬 Prompt ✨
+        <span class="step-icon">🚀</span>
+        <span>Step 1：請先「選擇快速套用範本」再進行客製化！</span>
       </div>
       <label for="template-select"><b>快速套用範本</b></label>
       <select id="template-select">
-        <option value="">請選擇範本（分類）</option>
-        <optgroup label="🔥 商務 / 職場">
+        <option value="">（請下拉選擇範本，所有內容會自動帶入）</option>
+        <optgroup label="商務應用">
           <option value="b2b_intro_mail">業務開發郵件（B2B）</option>
           <option value="annual_report">年度業績簡報</option>
           <option value="business_reply">商務合作回信</option>
           <option value="cover_letter">求職信（Cover Letter）</option>
           <option value="edm_email">Email 行銷 EDM 樣板</option>
-          <option value="meeting_summary">會議紀要摘要</option>
+          <option value="meeting_summary">會議紀要重點摘要</option>
         </optgroup>
-        <optgroup label="🌱 學習 / 教育">
+        <optgroup label="學習／個人">
           <option value="lesson_plan">教學腳本</option>
           <option value="study_notes">學習筆記整理</option>
-          <option value="resume_bio">履歷自傳生成</option>
+          <option value="resume_bio">履歷自傳產生</option>
         </optgroup>
-        <optgroup label="🎬 創意 / 內容">
+        <optgroup label="創意／行銷">
           <option value="creative_copy">創意文案</option>
           <option value="ad_headline">廣告標題激發</option>
           <option value="event_invite">活動邀請文</option>
           <option value="youtube_script">YouTube 影片腳本</option>
-          <option value="social_post">社群貼文</option>
+        </optgroup>
+        <optgroup label="社群／內容">
+          <option value="social_post">社群貼文內容</option>
           <option value="newsletter">電子報開頭段落</option>
           <option value="faq_support">FAQ 客服自動回覆</option>
+        </optgroup>
+        <optgroup label="產品／SEO">
           <option value="product_review">產品開箱心得</option>
           <option value="product_faq">產品 FAQ 自動生成</option>
-        </optgroup>
-        <optgroup label="🔍 SEO / 行銷優化">
           <option value="seo_title">SEO 文章標題與關鍵字</option>
+        </optgroup>
+        <optgroup label="圖像生成">
           <option value="midjourney_art">Midjourney 圖像描述</option>
         </optgroup>
       </select>
       <button id="clear-form" type="button">清空</button>
+      <div class="after-template-hint">您可以再修改任何內容，產生「屬於你的」專屬 Prompt！</div>
     </section>
-    <section class="card" id="prompt-card">
+    <!-- 主表單 -->
+    <section class="card">
       <form id="prompt-form" class="form">
         <label for="goal"><span class="required">*</span> 今天的目標：</label>
-        <select id="goal" required>
-          <option value="">請選擇目標</option>
-          <option value="激發創意">激發創意</option>
-          <option value="效率工作">效率工作</option>
-          <option value="品牌塑造">品牌塑造</option>
-          <option value="學習成長">學習成長</option>
-          <option value="趣味互動">趣味互動</option>
-        </select>
+        <input type="text" id="goal" required placeholder="如：激發創意、效率工作、品牌塑造…">
         <small>每次不同目標都會帶給你不同 AI 驚喜 ✨</small>
 
         <label for="topic"><span class="required">*</span> 主題內容：</label>
-        <input type="text" id="topic" placeholder="如：新產品上市、教學腳本、社群貼文…" required>
+        <input type="text" id="topic" required placeholder="如：新產品上市、教學腳本、社群貼文…">
         <small>明確描述想要產生的主題或情境。</small>
 
         <label for="userRole"><span class="required">*</span> 使用者角色：</label>
-        <input type="text" id="userRole" placeholder="如：社群小編、設計師…" required>
+        <input type="text" id="userRole" required placeholder="如：社群小編、設計師…">
         <small>這組 Prompt 是由什麼身份的人來操作？</small>
 
         <label for="audience"><span class="required">*</span> 目標受眾：</label>
-        <input type="text" id="audience" placeholder="如：25-35歲女性、國高中生…" required>
+        <input type="text" id="audience" required placeholder="如：25-35歲女性、國高中生…">
         <small>這組內容要給誰看？</small>
 
         <label for="platform"><span class="required">*</span> 使用平台：</label>
-        <select id="platform" required>
-          <option value="">— 請選擇 —</option>
-          <option value="ChatGPT">ChatGPT</option>
-          <option value="Midjourney">Midjourney</option>
-          <option value="通用">通用 / 其他</option>
-        </select>
+        <input type="text" id="platform" required placeholder="如：ChatGPT、Midjourney、通用…">
         <small>你要把 prompt 用在哪個 AI 平台？</small>
 
         <label for="tone"><span class="required">*</span> 語氣 / 風格：</label>
-        <select id="tone" required>
-          <option value="">— 請選擇 —</option>
-          <option value="專業">專業</option>
-          <option value="專業且親切">專業且親切</option>
-          <option value="專業誠懇">專業誠懇</option>
-          <option value="輕鬆">輕鬆</option>
-          <option value="詩意">詩意</option>
-          <option value="啟發性">啟發性</option>
-          <option value="品牌感">品牌感</option>
-          <option value="激勵">激勵</option>
-          <option value="溫馨">溫馨</option>
-          <option value="條理清楚">條理清楚</option>
-        </select>
+        <input type="text" id="tone" required placeholder="如：專業、輕鬆、啟發性…">
         <small>希望 AI 產出什麼語氣？</small>
 
         <label for="constraint">限制條件（選填）：</label>
@@ -158,14 +147,7 @@
         <small>有特別想讓 AI 參考的資料或來源可填寫。</small>
 
         <label for="format"><span class="required">*</span> 輸出格式：</label>
-        <select id="format" required>
-          <option value="">— 請選擇 —</option>
-          <option value="簡短描述">簡短描述</option>
-          <option value="詳細描述">詳細描述</option>
-          <option value="腳本/多段">腳本 / 多段</option>
-          <option value="條列式">條列式</option>
-          <option value="簡短描述＋一句展望">簡短描述＋一句展望</option>
-        </select>
+        <input type="text" id="format" required placeholder="如：條列、詳細描述、腳本/多段…">
         <small>希望 AI 產生哪種形式？</small>
 
         <label for="group">收藏分組（選填）：</label>
@@ -173,11 +155,11 @@
         <small>收藏時可為此 prompt 加上自訂分組，方便管理與搜尋。</small>
 
         <button type="submit" class="btn-submit">產生專屬 AI Prompt</button>
-        <div class="after-template-hint">選擇範本後，歡迎調整內容以更貼近你的需求！</div>
       </form>
       <section id="output-section" class="output-section" style="display:none;">
         <label for="output"><b>產生結果：</b></label>
         <textarea id="output" rows="8" readonly></textarea>
+        <div id="dynamic-feedback" class="dynamic-feedback"></div>
         <div class="output-actions">
           <button id="copy-btn" class="btn-secondary">複製</button>
           <button id="save-btn" class="btn-secondary">加入我的最愛</button>
@@ -217,11 +199,6 @@
   </div>
   <div id="toast" class="toast"></div>
   <footer class="footer">Prompt 產生器 © 2025</footer>
-  <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      window._firebaseInit && window._firebaseInit();
-    });
-  </script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
