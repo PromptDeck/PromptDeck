@@ -5,13 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PromptDeck — AI Prompt 產生器、收藏與雲端管理工具</title>
   <meta name="description" content="PromptDeck 是專為創作者設計的 AI Prompt 產生器，支援自動化、範本套用、雲端收藏與個人化互動，讓你輕鬆管理與生成高質感 Prompt。">
+  <meta name="keywords" content="AI, Prompt, Prompt Generator, 產生器, ChatGPT, Midjourney, 收藏, 雲端, 生成式AI, 社群, 文案, 創意, 自動化, SEO">
+  <meta name="author" content="PromptDeck Team">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="PromptDeck — AI Prompt 產生器" />
+  <meta property="og:description" content="你的 AI Prompt 管理與產生神器，立即體驗個人化互動！" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://promptdeck.github.io/PromptDeck/" />
+  <!-- <meta property="og:image" content="https://promptdeck.github.io/PromptDeck/og_image.png" /> -->
+  <!-- Google AdSense 自動廣告 -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4132904286933531"
+     crossorigin="anonymous"></script>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+    window._firebaseInit = () => {
+      // 你的 config
+      const firebaseConfig = {
+        apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
+        authDomain: "promptdeck-8366f.firebaseapp.com",
+        projectId: "promptdeck-8366f",
+        storageBucket: "promptdeck-8366f.firebasestorage.app",
+        messagingSenderId: "1047872909519",
+        appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
+        measurementId: "G-QD99FJNSGH"
+      };
+      window._app = initializeApp(firebaseConfig);
+      window._auth = getAuth();
+      window._db = getFirestore();
+      window._GoogleAuthProvider = GoogleAuthProvider;
+      window._signInWithPopup = signInWithPopup;
+      window._signOut = signOut;
+      window._onAuthStateChanged = onAuthStateChanged;
+      window._collection = collection;
+      window._addDoc = addDoc;
+      window._getDocs = getDocs;
+      window._query = query;
+      window._where = where;
+      window._orderBy = orderBy;
+      window._deleteDoc = deleteDoc;
+      window._doc = doc;
+    };
+  </script>
 </head>
 <body>
   <header class="header">
     <div class="logo">PromptDeck</div>
-    <div id="user-display" class="user-display"></div>
+    <div id="user-display" class="user-display">
+      <button id="login-btn">登入 / 註冊</button>
+      <span id="user-email" style="display:none"></span>
+      <button id="logout-btn" style="display:none">登出</button>
+    </div>
   </header>
   <main class="main-container">
 
@@ -121,13 +169,51 @@
         <textarea id="output" rows="8" readonly></textarea>
         <div class="output-actions">
           <button id="copy-btn" class="btn-secondary">複製</button>
+          <button id="save-btn" class="btn-secondary">加入我的最愛</button>
         </div>
         <div id="save-message" class="save-message"></div>
       </section>
     </section>
 
+    <!-- 我的雲端最愛 -->
+    <section id="favorites-section" class="card" style="display:none;">
+      <h2>⭐ 我的雲端最愛</h2>
+      <div id="favorites-list"></div>
+      <button id="export-btn" class="btn-export">一鍵匯出全部收藏</button>
+    </section>
+
+    <!-- 用戶留言區塊 -->
+    <section id="feedback-section" class="card">
+      <h2>💬 用戶留言/建議</h2>
+      <form id="feedback-form" class="form">
+        <label for="feedback-message"><span class="required">*</span> 您的留言：</label>
+        <textarea id="feedback-message" required placeholder="歡迎留下您的建議或回饋..."></textarea>
+        <button type="submit" class="btn-submit">送出留言</button>
+      </form>
+      <div id="feedback-success" class="save-message"></div>
+    </section>
   </main>
+  <!-- 登入 Modal -->
+  <div id="login-modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="modal-close" class="modal-close">&times;</span>
+      <h2>會員登入／註冊</h2>
+      <div class="browser-warning" style="color:#B26E00;font-size:1em;margin-bottom:12px;line-height:1.7;">
+        <span style="font-size:1.3em;">🔒</span>
+        <b>Google 登入需在 Chrome 或 Safari（原生瀏覽器）進行。</b><br>
+        若你在 LINE、Facebook、Instagram 內建瀏覽器，請點右上角「⋯」→「在瀏覽器中開啟」再登入。
+      </div>
+      <button id="google-login" class="btn-google">使用 Google 帳號登入</button>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
   <footer class="footer">Prompt 產生器 © 2025</footer>
+  <script>
+    // 等所有 SDK import 後才初始化（防止 race condition）
+    window.addEventListener('DOMContentLoaded', function () {
+      window._firebaseInit && window._firebaseInit();
+    });
+  </script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
