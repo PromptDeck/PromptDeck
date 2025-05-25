@@ -1,4 +1,4 @@
-// [1] Apple 動態引導 & 範本預填（與表單 disable 控制）
+// 範本全部優化、分類
 const templates = {
   b2b_intro_mail: {
     goal: "品牌塑造",
@@ -10,17 +10,6 @@ const templates = {
     constraint: "條列、300字內",
     reference: "公司簡介、產品優勢",
     format: "詳細描述"
-  },
-  meeting_summary: {
-    goal: "效率工作",
-    topic: "會議紀要重點摘要",
-    userRole: "會議記錄者",
-    audience: "團隊同事",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "條列、精簡",
-    reference: "",
-    format: "條列式"
   },
   annual_report: {
     goal: "效率工作",
@@ -39,10 +28,76 @@ const templates = {
     userRole: "專案經理",
     audience: "潛在合作廠商",
     platform: "ChatGPT",
-    tone: "專業",
+    tone: "專業且親切",
     constraint: "禮貌、具體回覆",
     reference: "合作條件、先前溝通紀錄",
     format: "簡短描述＋一句展望"
+  },
+  cover_letter: {
+    goal: "學習成長",
+    topic: "求職信（Cover Letter）",
+    userRole: "求職者",
+    audience: "人資、面試主管",
+    platform: "ChatGPT",
+    tone: "專業誠懇",
+    constraint: "300字內、量身打造",
+    reference: "職缺描述、自傳",
+    format: "詳細描述"
+  },
+  edm_email: {
+    goal: "品牌塑造",
+    topic: "Email 行銷 EDM 樣板",
+    userRole: "行銷人員",
+    audience: "目標客戶",
+    platform: "ChatGPT",
+    tone: "激勵、吸引人",
+    constraint: "附 CTA（行動呼籲）",
+    reference: "促銷活動資訊",
+    format: "簡短描述＋一句展望"
+  },
+  meeting_summary: {
+    goal: "效率工作",
+    topic: "會議紀要重點摘要",
+    userRole: "會議記錄者",
+    audience: "團隊同事",
+    platform: "ChatGPT",
+    tone: "專業",
+    constraint: "條列、精簡",
+    reference: "",
+    format: "條列式"
+  },
+  lesson_plan: {
+    goal: "學習成長",
+    topic: "教學腳本",
+    userRole: "老師",
+    audience: "初學者",
+    platform: "ChatGPT",
+    tone: "啟發性",
+    constraint: "逐步、淺顯易懂",
+    reference: "",
+    format: "腳本/多段"
+  },
+  study_notes: {
+    goal: "學習成長",
+    topic: "學習筆記整理",
+    userRole: "學生",
+    audience: "自己、同學",
+    platform: "ChatGPT",
+    tone: "條理清楚",
+    constraint: "條列、重點精簡",
+    reference: "課堂內容",
+    format: "條列式"
+  },
+  resume_bio: {
+    goal: "學習成長",
+    topic: "履歷自傳產生",
+    userRole: "求職者",
+    audience: "面試官、人資",
+    platform: "ChatGPT",
+    tone: "專業",
+    constraint: "300字以內",
+    reference: "學經歷、技能",
+    format: "詳細描述"
   },
   creative_copy: {
     goal: "激發創意",
@@ -77,6 +132,17 @@ const templates = {
     reference: "",
     format: "簡短描述＋一句展望"
   },
+  youtube_script: {
+    goal: "激發創意",
+    topic: "YouTube 影片腳本",
+    userRole: "YouTuber",
+    audience: "頻道粉絲",
+    platform: "ChatGPT",
+    tone: "輕鬆幽默",
+    constraint: "分段、可含 emoji",
+    reference: "主題大綱",
+    format: "腳本/多段"
+  },
   social_post: {
     goal: "趣味互動",
     topic: "社群貼文內容",
@@ -110,28 +176,6 @@ const templates = {
     reference: "",
     format: "條列式"
   },
-  lesson_plan: {
-    goal: "學習成長",
-    topic: "Python 教學腳本",
-    userRole: "老師",
-    audience: "初學者",
-    platform: "ChatGPT",
-    tone: "啟發性",
-    constraint: "逐步、淺顯易懂",
-    reference: "",
-    format: "腳本/多段"
-  },
-  resume_bio: {
-    goal: "學習成長",
-    topic: "履歷自傳產生",
-    userRole: "求職者",
-    audience: "面試官、人資",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "300字以內",
-    reference: "學經歷、技能",
-    format: "詳細描述"
-  },
   product_review: {
     goal: "激發創意",
     topic: "產品開箱心得",
@@ -142,6 +186,28 @@ const templates = {
     constraint: "誠實、具體",
     reference: "產品說明書",
     format: "簡短描述＋一句展望"
+  },
+  product_faq: {
+    goal: "效率工作",
+    topic: "產品 FAQ 自動生成",
+    userRole: "產品經理",
+    audience: "顧客",
+    platform: "ChatGPT",
+    tone: "溫馨且解釋性強",
+    constraint: "條列、每題簡潔明瞭",
+    reference: "產品說明書、常見問題紀錄",
+    format: "條列式"
+  },
+  seo_title: {
+    goal: "品牌塑造",
+    topic: "SEO 文章標題與關鍵字",
+    userRole: "網站小編",
+    audience: "搜尋用戶",
+    platform: "ChatGPT",
+    tone: "專業",
+    constraint: "中英文各五組",
+    reference: "主要產品、目標市場",
+    format: "條列式"
   },
   midjourney_art: {
     goal: "激發創意",
@@ -193,7 +259,6 @@ document.getElementById('clear-form').onclick = () => {
   document.getElementById('output-section').style.display = 'none';
 };
 
-// [2] 產生高價值詳細 Prompt
 document.getElementById('prompt-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const get = id => document.getElementById(id).value.trim();
@@ -220,14 +285,13 @@ ${get('reference') ? '【引用資料】' + get('reference') : ''}
   document.getElementById('output-section').style.display = '';
 });
 
-// [3] 一鍵複製
 document.getElementById('copy-btn').onclick = function() {
   const out = document.getElementById('output');
   out.select();
   document.execCommand('copy');
   showToast('已複製到剪貼簿！');
 };
-// [4] Firebase 初始化、收藏、留言、Google 登入
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.innerText = msg;
@@ -273,7 +337,7 @@ window._onAuthStateChanged && window._onAuthStateChanged(window._auth, user => {
   loadFavorites();
 });
 
-// [5] 收藏功能
+// 收藏
 const db = () => window._db;
 const favoritesSection = document.getElementById('favorites-section');
 const favoritesList = document.getElementById('favorites-list');
@@ -324,7 +388,6 @@ window.deleteFavorite = async function(id) {
   loadFavorites();
 };
 
-// 一鍵匯出
 document.getElementById('export-btn').onclick = async function() {
   const prompts = Array.from(document.querySelectorAll('.favorite-item pre')).map(e => e.textContent);
   if (prompts.length === 0) return showToast('沒有收藏！');
@@ -336,7 +399,6 @@ document.getElementById('export-btn').onclick = async function() {
   URL.revokeObjectURL(a.href);
 };
 
-// [6] 用戶留言
 document.getElementById('feedback-form').onsubmit = async function(e) {
   e.preventDefault();
   const msg = document.getElementById('feedback-message').value.trim();
