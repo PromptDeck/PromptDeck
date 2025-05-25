@@ -22,9 +22,10 @@ let userFavorites = [];
 let favoritesCache = [];
 let lastPrompt = null;
 
-// --- 範本（含預設內容） --- //
+// --- 範本（含 goal 與預設內容） --- //
 const templates = {
   b2b_intro_mail: {
+    goal: "效率工作",
     topic: "產品合作提案",
     userRole: "業務經理",
     audience: "潛在企業客戶（B2B）",
@@ -35,6 +36,7 @@ const templates = {
     reference: "自家公司介紹、官網資訊"
   },
   meeting_summary: {
+    goal: "效率工作",
     topic: "專案進度會議",
     userRole: "專案經理",
     audience: "專案團隊成員",
@@ -45,6 +47,7 @@ const templates = {
     reference: "本次會議記錄"
   },
   annual_report: {
+    goal: "品牌塑造",
     topic: "年度營運成果",
     userRole: "行銷主管",
     audience: "公司高層、合作夥伴",
@@ -55,6 +58,7 @@ const templates = {
     reference: "年度財報、主管訪談紀要"
   },
   business_reply: {
+    goal: "效率工作",
     topic: "詢問合作進度",
     userRole: "業務助理",
     audience: "合作廠商窗口",
@@ -65,6 +69,7 @@ const templates = {
     reference: ""
   },
   creative_copy: {
+    goal: "激發創意",
     topic: "新品上市活動宣傳",
     userRole: "文案企劃",
     audience: "社群大眾",
@@ -75,6 +80,7 @@ const templates = {
     reference: ""
   },
   ad_headline: {
+    goal: "激發創意",
     topic: "夏日促銷活動",
     userRole: "廣告投放人員",
     audience: "潛在消費者",
@@ -85,6 +91,7 @@ const templates = {
     reference: ""
   },
   event_invite: {
+    goal: "趣味互動",
     topic: "品牌粉絲見面會",
     userRole: "社群小編",
     audience: "品牌忠實粉絲",
@@ -95,6 +102,7 @@ const templates = {
     reference: ""
   },
   social_post: {
+    goal: "趣味互動",
     topic: "世界環境日宣導",
     userRole: "社群小編",
     audience: "社群粉絲",
@@ -105,6 +113,7 @@ const templates = {
     reference: ""
   },
   newsletter: {
+    goal: "品牌塑造",
     topic: "產品改版通知",
     userRole: "品牌經理",
     audience: "訂閱電子報的用戶",
@@ -115,6 +124,7 @@ const templates = {
     reference: ""
   },
   faq_support: {
+    goal: "效率工作",
     topic: "退換貨常見問題",
     userRole: "客服專員",
     audience: "消費者",
@@ -125,6 +135,7 @@ const templates = {
     reference: ""
   },
   lesson_plan: {
+    goal: "學習成長",
     topic: "Python基礎教學",
     userRole: "講師",
     audience: "初學者",
@@ -135,6 +146,7 @@ const templates = {
     reference: ""
   },
   resume_bio: {
+    goal: "學習成長",
     topic: "個人簡歷自傳",
     userRole: "求職者",
     audience: "HR主管",
@@ -145,6 +157,7 @@ const templates = {
     reference: ""
   },
   product_review: {
+    goal: "學習成長",
     topic: "智慧型手機開箱心得",
     userRole: "開箱達人",
     audience: "科技愛好者",
@@ -155,6 +168,7 @@ const templates = {
     reference: ""
   },
   midjourney_art: {
+    goal: "激發創意",
     topic: "未來主義城市夜景",
     userRole: "影像創作者",
     audience: "Midjourney平台用戶",
@@ -222,6 +236,7 @@ function generateHighValuePrompt(inputs, templateType = "") {
   if (inputs.constraint) extraSections.push("請務必遵守以下限制：" + inputs.constraint);
   if (inputs.reference) extraSections.push("請適當引用或整合以下資料來源：" + inputs.reference);
   if (inputs.format) extraSections.push("輸出格式採用【" + inputs.format + "】，請分段條列、層次分明。");
+  if (inputs.goal) extraSections.unshift("本次目標：" + inputs.goal + "，請依此調整內容的聚焦。");
 
   extraSections.push("最後請自動檢查內容有無遺漏關鍵重點，並補充不足之處。字數至少" + minTotalLength + "字，內容需有邏輯、細節和專業感。");
 
@@ -313,6 +328,7 @@ function initForm() {
     e.preventDefault();
     const templateType = document.getElementById('template-select').value;
     const inputs = {
+      goal: document.getElementById('goal').value,
       topic: document.getElementById('topic').value,
       userRole: document.getElementById('userRole').value,
       audience: document.getElementById('audience').value,
@@ -380,6 +396,10 @@ function setupTemplateSelection() {
     Object.entries(templates[type]).forEach(([k, v]) => {
       if (document.getElementById(k)) document.getElementById(k).value = v;
     });
+    // 自動帶入 goal
+    if (templates[type].goal && document.getElementById('goal')) {
+      document.getElementById('goal').value = templates[type].goal;
+    }
   };
 }
 
