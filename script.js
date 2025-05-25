@@ -61,8 +61,140 @@ const templates = {
     reference: "財報數據、內部簡報",
     format: "條列式"
   },
-  // ... 其餘範本請自行補齊
+  "b2b_intro_mail": {
+    name: "業務開發郵件（B2B）",
+    goal: "效率工作",
+    topic: "向潛在企業客戶介紹我們的產品/服務，爭取進一步合作機會。",
+    userRole: "業務開發、行銷人員",
+    audience: "企業採購或決策人員",
+    platform: "通用",
+    tone: "專業",
+    constraint: "簡明扼要、強調產品優勢",
+    reference: "產品型錄、官網資訊",
+    format: "簡短描述＋一句展望"
+  },
+  "creative_copy": {
+    name: "創意文案",
+    goal: "激發創意",
+    topic: "針對新產品上市設計吸引人的行銷文案。",
+    userRole: "行銷企劃、文案人員",
+    audience: "大眾消費者",
+    platform: "通用",
+    tone: "啟發性",
+    constraint: "精簡、具創意、可轉發",
+    reference: "產品特色說明、競品資料",
+    format: "簡短描述"
+  },
+  "ad_headline": {
+    name: "廣告標題激發",
+    goal: "激發創意",
+    topic: "為行銷活動或商品撰寫吸引人的廣告標題。",
+    userRole: "行銷、廣告企劃",
+    audience: "目標客群",
+    platform: "通用",
+    tone: "激勵",
+    constraint: "限制12字內、要能引發點擊",
+    reference: "行銷活動主題、產品亮點",
+    format: "條列式"
+  },
+  "event_invite": {
+    name: "活動邀請文",
+    goal: "品牌塑造",
+    topic: "邀請目標對象參加公司舉辦的線上或實體活動。",
+    userRole: "活動企劃、品牌經理",
+    audience: "潛在客戶或合作夥伴",
+    platform: "通用",
+    tone: "溫馨",
+    constraint: "資訊完整、附活動亮點",
+    reference: "活動頁面、活動資訊",
+    format: "簡短描述"
+  },
+  "social_post": {
+    name: "社群貼文",
+    goal: "品牌塑造",
+    topic: "撰寫吸引粉絲互動的品牌社群貼文。",
+    userRole: "社群小編、行銷人員",
+    audience: "社群粉絲、潛在消費者",
+    platform: "ChatGPT",
+    tone: "輕鬆",
+    constraint: "結尾附帶互動問題",
+    reference: "品牌官方資訊",
+    format: "簡短描述"
+  },
+  "newsletter": {
+    name: "電子報開頭段落",
+    goal: "品牌塑造",
+    topic: "撰寫本期電子報的開場引言，簡要說明內容亮點。",
+    userRole: "內容編輯、行銷人員",
+    audience: "電子報訂閱者",
+    platform: "通用",
+    tone: "品牌感",
+    constraint: "不超過70字、語氣友善",
+    reference: "本期重點內容",
+    format: "簡短描述"
+  },
+  "faq_support": {
+    name: "FAQ 客服自動回覆",
+    goal: "效率工作",
+    topic: "針對常見問題自動生成客服回覆內容。",
+    userRole: "客服人員",
+    audience: "一般消費者、客戶",
+    platform: "通用",
+    tone: "專業",
+    constraint: "語氣友善、簡單易懂",
+    reference: "產品FAQ、官網說明",
+    format: "條列式"
+  },
+  "lesson_plan": {
+    name: "教學腳本",
+    goal: "學習成長",
+    topic: "設計一份清楚有趣的教學腳本，包含步驟和重點。",
+    userRole: "講師、教師",
+    audience: "學生或學員",
+    platform: "通用",
+    tone: "啟發性",
+    constraint: "條列清楚、每步驟50字以內",
+    reference: "教材大綱、課程目標",
+    format: "腳本/多段"
+  },
+  "resume_bio": {
+    name: "履歷自傳生成",
+    goal: "學習成長",
+    topic: "協助生成一段亮點自傳，用於履歷或LinkedIn。",
+    userRole: "求職者、轉職者",
+    audience: "人資主管、面試官",
+    platform: "通用",
+    tone: "專業",
+    constraint: "150字內，強調個人優勢",
+    reference: "過往經歷、成就",
+    format: "簡短描述"
+  },
+  "product_review": {
+    name: "產品開箱心得",
+    goal: "趣味互動",
+    topic: "撰寫個人產品開箱體驗與優缺點分享。",
+    userRole: "消費者、KOL",
+    audience: "潛在消費者",
+    platform: "通用",
+    tone: "輕鬆",
+    constraint: "內容真實、可具體列舉優缺點",
+    reference: "產品規格、個人使用心得",
+    format: "條列式"
+  },
+  "midjourney_art": {
+    name: "Midjourney 圖像描述",
+    goal: "激發創意",
+    topic: "協助撰寫 Midjourney AI 圖像生成描述詞（Prompt）。",
+    userRole: "設計師、創作者",
+    audience: "AI 圖像生成社群",
+    platform: "Midjourney",
+    tone: "詩意",
+    constraint: "英文描述、條列主題元素",
+    reference: "想要呈現的主題風格",
+    format: "條列式"
+  }
 };
+
 
 // ========== 3. DOM 物件 ==========
 const userDisplay = document.getElementById("user-display");
