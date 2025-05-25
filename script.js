@@ -259,15 +259,16 @@ document.getElementById('clear-form').onclick = () => {
   document.getElementById('output-section').style.display = 'none';
 };
 
+// **這裡是已經改好的產生 prompt 區塊，直接給 user 可用 AI 指令**
 document.getElementById('prompt-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const get = id => document.getElementById(id).value.trim();
-let prompt = 
+
+  let prompt = 
 `請以「${get('tone')}」的語氣，針對「${get('audience')}」，在「${get('platform')}」上，以「${get('format')}」方式，撰寫關於「${get('topic')}」的內容。
 身份角色為「${get('userRole')}」，目標是「${get('goal')}」。
 ${get('constraint') ? "請注意：" + get('constraint') : ""}
 ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
-
 
   document.getElementById('output').value = prompt;
   document.getElementById('output-section').style.display = '';
