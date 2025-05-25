@@ -1,15 +1,16 @@
 // 範本全部優化、分類
-const templates = {
-  b2b_intro_mail: {
-    goal: "品牌塑造",
-    topic: "B2B 業務開發郵件",
-    userRole: "業務專員",
-    audience: "潛在合作夥伴",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "條列、300字內",
-    reference: "公司簡介、產品優勢",
-    format: "詳細描述"
+document.addEventListener('DOMContentLoaded', function () {
+  const templates = {
+    b2b_intro_mail: {
+      goal: "品牌塑造",
+      topic: "B2B 業務開發郵件",
+      userRole: "業務專員",
+      audience: "潛在合作夥伴",
+      platform: "ChatGPT",
+      tone: "專業",
+      constraint: "條列、300字內",
+      reference: "公司簡介、產品優勢",
+      format: "詳細描述"
   },
   annual_report: {
     goal: "效率工作",
