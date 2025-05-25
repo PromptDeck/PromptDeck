@@ -1,366 +1,386 @@
+// ---------- templates（全部預設）----------
 const templates = {
+  // 商務應用
   b2b_intro_mail: {
-    goal: "品牌塑造",
-    topic: "B2B 業務開發郵件",
-    userRole: "業務專員",
-    audience: "潛在合作夥伴",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "條列、300字內",
-    reference: "公司簡介、產品優勢",
-    format: "詳細描述",
+    goal: "拓展企業客戶",
+    topic: "新SaaS產品陌生開發郵件",
+    userRole: "業務開發經理",
+    audience: "企業決策者",
+    platform: "Email/ChatGPT",
+    tone: "專業、誠懇",
+    constraint: "條列優勢、字數不超過300字",
+    reference: "",
+    format: "條列＋邀約行動",
     prompt: `
-請協助產生一封B2B陌生開發郵件，結構如下：
-1. 開頭簡短自我介紹及主旨說明
-2. 說明產品/服務主要優勢（條列2-3點）
-3. 強調與對方合作的潛力（可舉產業/數據證明）
-4. 結尾友善邀約後續聯繫（附CTA）
-內容請保持專業簡潔，總字數約300字以內。
+請協助我撰寫一封B2B業務開發郵件，主題為「{{topic}}」。
+- 收件人對象為{{audience}}。
+- 我是{{userRole}}。
+- 本產品主要優勢請條列2-3點。
+- 語氣請保持{{tone}}。
+- 結尾加入友善邀約行動（如：是否可安排會議深入交流）。
+- 內容請簡明扼要，符合{{constraint}}。
 `
   },
   annual_report: {
-    goal: "效率工作",
-    topic: "年度業績簡報",
+    goal: "年度成果彙整",
+    topic: "2024年品牌行銷績效簡報",
     userRole: "行銷經理",
-    audience: "主管、董事會",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "含數據、條列",
-    reference: "年度銷售數據、重要事件",
-    format: "詳細描述",
+    audience: "公司高層、部門同仁",
+    platform: "PowerPoint/ChatGPT",
+    tone: "專業、條理分明",
+    constraint: "每項重點限50字",
+    reference: "Google Analytics數據",
+    format: "條列式、分段說明",
     prompt: `
-請產生一份年度業績簡報重點，結構如下：
-1. 年度業績/成長概述（首段3行）
-2. 主要數據條列（如營收/成長率/新客/回購等）
-3. 關鍵成功要素/重大事件
-4. 結尾一句展望未來
-內容需條理清楚，數據明確。
+請幫我產出一份{{topic}}的簡報大綱。
+- 身份：{{userRole}}
+- 受眾：{{audience}}
+- 資料來源：{{reference}}
+- 請以{{tone}}，將年度亮點、成長數據、主要策略與未來展望分段條列。
+- 各點不超過{{constraint}}。
 `
   },
   business_reply: {
-    goal: "品牌塑造",
-    topic: "商務合作回信",
-    userRole: "專案經理",
-    audience: "潛在合作廠商",
-    platform: "ChatGPT",
-    tone: "專業且親切",
-    constraint: "禮貌、具體回覆",
-    reference: "合作條件、先前溝通紀錄",
-    format: "簡短描述＋一句展望",
+    goal: "回覆合作邀約",
+    topic: "合作提案回信",
+    userRole: "品牌負責人",
+    audience: "潛在合作夥伴",
+    platform: "Email",
+    tone: "專業、友善、積極",
+    constraint: "",
+    reference: "",
+    format: "標準商業書信格式",
     prompt: `
-請幫我生成一份商務合作回信，內容包含：
-1. 針對對方的提案/合作需求，表達感謝
-2. 明確回覆合作條件或回饋
-3. 若有進一步問題或要求，條列具體說明
-4. 結尾給對方一個親切、積極的展望句
-語氣要專業且親切。
+請協助我撰寫一封回覆合作邀約的商業郵件，主題為「{{topic}}」。
+- 我的身份是{{userRole}}。
+- 收件人是{{audience}}。
+- 語氣請用{{tone}}，展現開放合作的態度。
+- 內容需回應對方重點、簡要介紹自身優勢、提出後續行動建議。
+- 請用{{format}}。
 `
   },
   cover_letter: {
-    goal: "學習成長",
-    topic: "求職信（Cover Letter）",
+    goal: "求職申請",
+    topic: "數位行銷專員應徵信",
     userRole: "求職者",
-    audience: "人資、面試主管",
-    platform: "ChatGPT",
-    tone: "專業誠懇",
-    constraint: "300字內、量身打造",
-    reference: "職缺描述、自傳",
-    format: "詳細描述",
+    audience: "人資/部門主管",
+    platform: "Email/LinkedIn",
+    tone: "誠懇、專業、自信",
+    constraint: "",
+    reference: "履歷重點",
+    format: "3段式",
     prompt: `
-請根據以下條件，撰寫一份專業誠懇的求職信（Cover Letter）：
-1. 開頭說明應徵動機與職缺關聯
-2. 條列個人能力/經驗與職缺的連結
-3. 強調自我優勢及對公司貢獻
-4. 結尾表達期待面談與合作
-內容精簡300字以內。
+請產出一份{{topic}}的求職信。
+- 身份：{{userRole}}
+- 受眾：{{audience}}
+- 請用{{tone}}自我介紹、說明應徵動機，並依據{{reference}}突顯個人亮點。
+- 全文請以{{format}}撰寫。
 `
   },
   edm_email: {
-    goal: "品牌塑造",
-    topic: "Email 行銷 EDM 樣板",
+    goal: "行銷推廣",
+    topic: "新品上市 EDM",
     userRole: "行銷人員",
-    audience: "目標客戶",
-    platform: "ChatGPT",
-    tone: "激勵、吸引人",
-    constraint: "附 CTA（行動呼籲）",
-    reference: "促銷活動資訊",
-    format: "簡短描述＋一句展望",
+    audience: "潛在消費者",
+    platform: "電子報",
+    tone: "吸引人、活潑",
+    constraint: "標題10字以內，主文80字內",
+    reference: "",
+    format: "標題＋主文＋CTA",
     prompt: `
-請產生一則具吸引力的Email行銷EDM內容，結構如下：
-1. 開頭吸睛問候＋痛點描述
-2. 推薦主打商品/活動亮點（條列）
-3. 結尾附行動呼籲（CTA）
-語氣激勵、可包含emoji。
+請協助產生{{topic}}的EDM文案。
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 請給我1句吸睛標題（{{constraint}}），1段主文（強調商品亮點），以及一個明確的行動呼籲。
+- 內容格式：{{format}}
 `
   },
   meeting_summary: {
-    goal: "效率工作",
-    topic: "會議紀要重點摘要",
+    goal: "記錄與摘要",
+    topic: "行銷策略會議紀要",
     userRole: "會議記錄者",
-    audience: "團隊同事",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "條列、精簡",
+    audience: "全體與會人員",
+    platform: "Google Docs/ChatGPT",
+    tone: "中立、精簡",
+    constraint: "條列五點",
     reference: "",
-    format: "條列式",
+    format: "條列摘要",
     prompt: `
-請協助整理一份會議紀要重點，內容結構如下：
-1. 會議時間/主題/參與人員簡述
-2. 會議重點事項條列（不少於3點）
-3. 待辦事項/後續追蹤
-請以條列式清楚呈現，內容力求簡明。
+請針對「{{topic}}」撰寫一份條列式會議紀要。
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 重點條列五點，包含主要決議、分工事項與追蹤進度。
+- 語氣：{{tone}}
 `
   },
+
+  // 學習／個人
   lesson_plan: {
-    goal: "學習成長",
-    topic: "教學腳本",
-    userRole: "老師",
-    audience: "初學者",
-    platform: "ChatGPT",
-    tone: "啟發性",
-    constraint: "逐步、淺顯易懂",
+    goal: "課程設計",
+    topic: "Python初學教學腳本",
+    userRole: "講師",
+    audience: "零基礎新手",
+    platform: "ChatGPT/教學簡報",
+    tone: "清楚易懂、鼓勵式",
+    constraint: "",
     reference: "",
-    format: "腳本/多段",
+    format: "逐步條列＋說明",
     prompt: `
-請根據下列主題，設計一份適合初學者的教學腳本，包含：
-1. 教學目標/核心重點
-2. 分段解說，每段以5-7句描述
-3. 互動問題或小練習建議
-語氣啟發，內容易懂、富有層次。
+我需要一份{{topic}}。
+- 角色：{{userRole}}
+- 對象：{{audience}}
+- 請依教學邏輯，條列課程章節、每章要點、舉例、並加勉勵語。
+- 語氣：{{tone}}
+- 輸出格式：{{format}}
 `
   },
   study_notes: {
-    goal: "學習成長",
-    topic: "學習筆記整理",
+    goal: "整理學習重點",
+    topic: "AI專題重點筆記",
     userRole: "學生",
-    audience: "自己、同學",
-    platform: "ChatGPT",
-    tone: "條理清楚",
-    constraint: "條列、重點精簡",
-    reference: "課堂內容",
-    format: "條列式",
+    audience: "自己",
+    platform: "Notion/ChatGPT",
+    tone: "摘要、條理清楚",
+    constraint: "每點20字",
+    reference: "",
+    format: "條列＋小結",
     prompt: `
-請協助將課堂內容條列整理為學習重點筆記，結構如下：
-1. 主題/章節說明（2-3句）
-2. 條列最重要的5-8點重點
-3. 若有關鍵例子或備註，額外說明
-內容務求精簡、條理分明。
+針對「{{topic}}」，幫我整理筆記。
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 重點摘要、每點{{constraint}}，最後加一小結。
+- 語氣：{{tone}}
 `
   },
   resume_bio: {
-    goal: "學習成長",
-    topic: "履歷自傳產生",
-    userRole: "求職者",
-    audience: "面試官、人資",
+    goal: "履歷亮點凸顯",
+    topic: "履歷自傳內容",
+    userRole: "應徵者",
+    audience: "面試官",
     platform: "ChatGPT",
-    tone: "專業",
-    constraint: "300字以內",
-    reference: "學經歷、技能",
-    format: "詳細描述",
+    tone: "專業、自信",
+    constraint: "",
+    reference: "",
+    format: "段落式",
     prompt: `
-請根據以下資訊，撰寫一份300字以內的履歷自傳，內容包含：
-1. 個人背景與主要學經歷
-2. 專業技能/代表成就
-3. 強調個人特質與優勢
-4. 結尾一句自我期許或展望
-語氣要專業、有條理。
+請根據下列資訊產生一段{{topic}}：
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 請展現能力、經驗與個人特色。
+- 請以{{tone}}語氣，{{format}}撰寫。
 `
   },
+
+  // 創意／行銷
   creative_copy: {
     goal: "激發創意",
-    topic: "創意文案",
+    topic: "品牌社群行銷文案",
     userRole: "文案企劃",
-    audience: "消費大眾",
-    platform: "ChatGPT",
-    tone: "啟發性",
-    constraint: "20字內",
+    audience: "品牌粉絲",
+    platform: "社群/ChatGPT",
+    tone: "輕鬆、有趣",
+    constraint: "",
     reference: "",
-    format: "簡短描述",
+    format: "三句式＋emoji",
     prompt: `
-請針對以下主題，發想3~5組具有創意、吸引力的文案短句，字數每句20字內。
-請強調創意點或品牌差異，可包含emoji。
+我要一段「{{topic}}」。
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 請用{{tone}}，用三句式搭配emoji，主題鮮明。
+- 可加入流行語/時事。
 `
   },
   ad_headline: {
-    goal: "激發創意",
-    topic: "廣告標題激發",
+    goal: "激發標題靈感",
+    topic: "廣告標語激發",
     userRole: "行銷企劃",
-    audience: "潛在消費者",
-    platform: "ChatGPT",
-    tone: "激勵",
+    audience: "產品目標客群",
+    platform: "廣告/ChatGPT",
+    tone: "吸引人、創意",
     constraint: "10字內",
     reference: "",
-    format: "條列式",
+    format: "五個選項",
     prompt: `
-請根據產品特性，設計5組吸睛的廣告標題（每組10字以內），請凸顯誘因與差異化。
+幫我想5個「{{topic}}」。
+- 角色：{{userRole}}
+- 對象：{{audience}}
+- 每個標題{{constraint}}。
+- 語氣：{{tone}}
 `
   },
   event_invite: {
-    goal: "激發創意",
-    topic: "活動邀請文",
-    userRole: "活動企劃",
-    audience: "目標參加者",
-    platform: "ChatGPT",
-    tone: "輕鬆",
+    goal: "活動宣傳",
+    topic: "品牌新品發表會邀請文",
+    userRole: "公關",
+    audience: "媒體與VIP客戶",
+    platform: "Email/社群",
+    tone: "誠懇、盛情邀約",
     constraint: "",
     reference: "",
-    format: "簡短描述＋一句展望",
+    format: "段落＋亮點條列",
     prompt: `
-請產生一份溫馨的活動邀請文，內容包含：
-1. 活動簡介與亮點
-2. 邀請對象與參加方式
-3. 結尾一句誠摯邀請或期待相見
-語氣輕鬆且有親和力。
+請協助產生「{{topic}}」邀請文。
+- 角色：{{userRole}}
+- 對象：{{audience}}
+- 語氣：{{tone}}
+- 內容包含活動主題、地點、時間、兩大亮點。
+- 格式：{{format}}
 `
   },
   youtube_script: {
-    goal: "激發創意",
-    topic: "YouTube 影片腳本",
+    goal: "影片腳本生成",
+    topic: "產品開箱YouTube腳本",
     userRole: "YouTuber",
-    audience: "頻道粉絲",
-    platform: "ChatGPT",
-    tone: "輕鬆幽默",
-    constraint: "分段、可含 emoji",
-    reference: "主題大綱",
-    format: "腳本/多段",
+    audience: "產品愛好者",
+    platform: "YouTube",
+    tone: "活潑、口語",
+    constraint: "",
+    reference: "",
+    format: "段落＋重點條列",
     prompt: `
-根據以下主題及大綱，生成一支YouTube短片腳本，結構如下：
-1. 開場歡迎語+吸引注意力（可加emoji）
-2. 主題重點分段介紹（每段可有小標/幽默點綴）
-3. 結尾call to action（訂閱/留言等）
-語氣活潑，總長度建議300-500字。
+請幫我生成{{topic}}。
+- 角色：{{userRole}}
+- 觀眾：{{audience}}
+- 開頭引起興趣，接著條列特色，結尾引導留言/訂閱。
+- 語氣：{{tone}}
 `
   },
+
+  // 社群／內容
   social_post: {
-    goal: "趣味互動",
-    topic: "社群貼文內容",
+    goal: "社群經營",
+    topic: "品牌新產品上市貼文",
     userRole: "社群小編",
-    audience: "粉絲",
-    platform: "ChatGPT",
-    tone: "輕鬆",
-    constraint: "附上 hashtag",
+    audience: "品牌粉絲",
+    platform: "Facebook/Instagram",
+    tone: "輕鬆、生活感",
+    constraint: "",
     reference: "",
-    format: "簡短描述",
+    format: "一段＋hashtag",
     prompt: `
-針對下列主題，撰寫一篇創意社群貼文，內容包含：
-1. 活潑有趣的主題描述
-2. 至少兩組 hashtag
-語氣輕鬆、鼓勵互動。
+產生一則「{{topic}}」。
+- 角色：{{userRole}}
+- 對象：{{audience}}
+- 請用{{tone}}，一段文字＋三組hashtag。
+- 可附一句提問與互動。
 `
   },
   newsletter: {
-    goal: "品牌塑造",
-    topic: "電子報開頭段落",
-    userRole: "行銷人員",
-    audience: "訂閱者",
-    platform: "ChatGPT",
-    tone: "溫馨",
+    goal: "電子報行銷",
+    topic: "品牌月報開頭段落",
+    userRole: "內容行銷",
+    audience: "訂閱用戶",
+    platform: "Email",
+    tone: "溫馨、啟發性",
     constraint: "",
     reference: "",
-    format: "詳細描述",
+    format: "一段文字",
     prompt: `
-請為下列主題撰寫一段溫馨的電子報開頭文，內容包含：
-1. 問候語及主題亮點
-2. 喚起共鳴或期待
-3. 結尾呼應品牌理念
-語氣溫馨、充滿正能量。
+請產生「{{topic}}」。
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 內容須溫馨開場＋本期亮點預告。
+- 語氣：{{tone}}
+- {{format}}
 `
   },
   faq_support: {
-    goal: "效率工作",
-    topic: "客服 FAQ 回覆",
-    userRole: "客服人員",
-    audience: "顧客",
+    goal: "自動客服回覆",
+    topic: "線上購物常見問答",
+    userRole: "客服AI",
+    audience: "消費者",
     platform: "ChatGPT",
-    tone: "溫馨",
-    constraint: "禮貌、迅速",
+    tone: "禮貌、親切",
+    constraint: "",
     reference: "",
-    format: "條列式",
+    format: "三問三答",
     prompt: `
-請協助自動生成FAQ客服回覆內容，結構如下：
-1. 條列顧客常見問題及精簡解答（不少於3題）
-2. 若有後續服務/聯繫方式，附註於末段
-語氣溫馨且友善。
+請針對「{{topic}}」產生三個常見問答對。
+- 角色：{{userRole}}
+- 對象：{{audience}}
+- 語氣：{{tone}}
 `
   },
+
+  // 產品／SEO
   product_review: {
-    goal: "激發創意",
-    topic: "產品開箱心得",
-    userRole: "部落客",
-    audience: "潛在買家",
-    platform: "ChatGPT",
-    tone: "品牌感",
-    constraint: "誠實、具體",
-    reference: "產品說明書",
-    format: "簡短描述＋一句展望",
+    goal: "產品體驗分享",
+    topic: "新款無線耳機開箱",
+    userRole: "3C部落客",
+    audience: "消費者",
+    platform: "部落格/ChatGPT",
+    tone: "專業、真實",
+    constraint: "",
+    reference: "",
+    format: "條列＋段落",
     prompt: `
-請產生一篇產品開箱心得文，內容包含：
-1. 簡述產品外觀/特色
-2. 實際使用心得，條列2-3點優缺點
-3. 結尾一句購買建議或展望
-語氣誠實，適度展現品牌感。
+請生成{{topic}}的開箱文。
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 請條列三大特色、優缺點，並給一段總結感想。
+- 語氣：{{tone}}
 `
   },
   product_faq: {
-    goal: "效率工作",
-    topic: "產品 FAQ 自動生成",
-    userRole: "產品經理",
-    audience: "顧客",
+    goal: "FAQ產生",
+    topic: "新產品常見問答",
+    userRole: "客服/產品經理",
+    audience: "消費者",
     platform: "ChatGPT",
-    tone: "溫馨且解釋性強",
-    constraint: "條列、每題簡潔明瞭",
-    reference: "產品說明書、常見問題紀錄",
-    format: "條列式",
+    tone: "清楚、專業",
+    constraint: "",
+    reference: "",
+    format: "五問五答",
     prompt: `
-根據下列產品資訊，自動生成產品FAQ，結構如下：
-1. 條列常見問題及解答（每題不超過40字）
-2. 強調安全/保固等關鍵資訊
-語氣溫馨、說明力強。
+針對「{{topic}}」，請給五組問答。
+- 角色：{{userRole}}
+- 對象：{{audience}}
+- 格式：{{format}}
+- 語氣：{{tone}}
 `
   },
   seo_title: {
-    goal: "品牌塑造",
-    topic: "SEO 文章標題與關鍵字",
-    userRole: "網站小編",
-    audience: "搜尋用戶",
-    platform: "ChatGPT",
-    tone: "專業",
-    constraint: "中英文各五組",
-    reference: "主要產品、目標市場",
-    format: "條列式",
+    goal: "SEO優化",
+    topic: "網站首頁SEO標題與關鍵字",
+    userRole: "SEO專員",
+    audience: "搜尋引擎",
+    platform: "Google/Bing",
+    tone: "簡潔、具吸引力",
+    constraint: "",
+    reference: "",
+    format: "五組標題+關鍵字",
     prompt: `
-請根據下列主題，設計SEO友善的文章標題與關鍵字組合，中英文各五組，格式如下：
-1. 中文標題 + 關鍵字
-2. 英文標題 + 關鍵字
-內容要貼近搜尋需求。
+針對「{{topic}}」，產生五組SEO標題和對應關鍵字。
+- 角色：{{userRole}}
+- 平台：{{platform}}
+- 語氣：{{tone}}
 `
   },
+
+  // 圖像生成
   midjourney_art: {
-    goal: "激發創意",
-    topic: "Midjourney 圖像指令",
-    userRole: "AI 創作者",
-    audience: "AI 圖像生成工具",
+    goal: "圖像生成描述",
+    topic: "日出下的城市天際線插畫",
+    userRole: "設計師",
+    audience: "Midjourney AI",
     platform: "Midjourney",
-    tone: "啟發性",
-    constraint: "中英對照",
+    tone: "藝術、抽象",
+    constraint: "畫面色調明亮、風格極簡",
     reference: "",
-    format: "條列式",
+    format: "英文敘述",
     prompt: `
-請根據以下描述，生成適用於Midjourney的圖像指令，格式如下：
-1. 中文描述
-2. 英文對照（prompt）
-3. 可加上風格、色彩等建議
-內容條理分明、可直接複製使用。
+產生一段Midjourney圖像生成英文描述：
+- 主題：{{topic}}
+- 角色：{{userRole}}
+- 受眾：{{audience}}
+- 語氣風格：{{tone}}
+- 限制條件：{{constraint}}
 `
   }
 };
-// ---------- templates (已優化個性化) -------------
-const templates = {
-  // ...（直接貼上我上一則的 templates 物件）...
-  // ...（字數限制這裡省略，請完整貼上那份）
-};
-// -------------------------------------------------
+// ---------- End templates ----------
 
+// ------------------- 主要功能 -----------------
 function setFormEnabled(enabled) {
   document.querySelectorAll('#prompt-form input, #prompt-form select, #prompt-form textarea, #prompt-form button[type="submit"]')
     .forEach(e => {
@@ -418,18 +438,17 @@ document.getElementById('prompt-form').addEventListener('submit', function (e) {
     output = `【主題】${t.topic}\n【目標受眾】${t.audience}\n${output}`;
   } else {
     const get = id => document.getElementById(id).value.trim();
-    output = 
-      `【今日目標】${get('goal')}
-【主題內容】${get('topic')}
-【操作角色】${get('userRole')}
-【目標受眾】${get('audience')}
-【使用平台】${get('platform')}
-【語氣風格】${get('tone')}
-【限制條件】${get('constraint')}
-${get('reference') ? '【引用資料】' + get('reference') : ''}
-【輸出格式】${get('format')}
+    output =
+      `你現在是一位${get('userRole')}，請根據下列需求產出一段AI指令：
+主題：「${get('topic')}」
+目標受眾：「${get('audience')}」
+平台：「${get('platform')}」
+語氣風格：「${get('tone')}」
+${get('constraint') ? '限制條件：「' + get('constraint') + '」' : ''}
+${get('reference') ? '引用資料：「' + get('reference') + '」' : ''}
+輸出格式：「${get('format')}」
 
-請根據以上資訊，結構化地為我生成高價值、高可讀性的 AI Prompt，分段落、條列、重點說明。
+請生成完整、結構化的內容，並針對主題重點及受眾需求，展現專業與創意。
 `;
   }
   document.getElementById('output').value = output;
