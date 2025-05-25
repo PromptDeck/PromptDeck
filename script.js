@@ -31,7 +31,7 @@ const templates = {
     platform: "ChatGPT",
     tone: "專業",
     format: "條列式",
-    constraint: "總長不少於300字，內容具體分段，結尾需有行動呼籲",
+    constraint: "總長不少於350字，內容具體分段，結尾需有行動呼籲",
     reference: "自家公司介紹、官網資訊"
   },
   meeting_summary: {
@@ -41,7 +41,7 @@ const templates = {
     platform: "通用",
     tone: "專業",
     format: "條列式",
-    constraint: "每點超過30字，需有結論與待追蹤事項",
+    constraint: "每點超過60字，需有結論與待追蹤事項",
     reference: "本次會議記錄"
   },
   annual_report: {
@@ -166,49 +166,73 @@ const templates = {
   }
 };
 
-// --- 主函式：根據 user 輸入產生高價值 Prompt --- //
-function generateDetailedPrompt(inputs, templateType = "") {
-  let advancedIntro = "";
-  let advancedBody = "";
-  let advancedFooter = "";
+// --- 高價值專業 Prompt 產生器 --- //
+function generateHighValuePrompt(inputs, templateType = "") {
+  let minTotalLength = 350; // 字數要求
+  let structure = [];
+  let extraSections = [];
 
+  // 不同範本結構
   switch (templateType) {
     case "b2b_intro_mail":
-      advancedIntro = "請以親切、專業、具體的語氣，自我介紹並說明寫信動機。";
-      advancedBody = "信中要包含自家公司簡介、合作亮點、可帶來的價值，並分段說明。";
-      advancedFooter = "結尾請有清楚行動邀請，並提供聯絡方式。";
+      structure = [
+        "1. 【主題背景】：描述產品特色、合作機會、產業趨勢，最少80字。",
+        "2. 【合作亮點】：條列三大合作優勢（數據/具體效益），每點不少於60字。",
+        "3. 【實際案例】：舉一個成功合作或模擬情境。",
+        "4. 【常見疑慮與解答】：預想2個常見問題並回覆。",
+        "5. 【行動邀請】：明確呼籲對方回信或安排會議。"
+      ];
+      extraSections.push("請用積極、專業、清晰語氣，避免空泛敘述。");
       break;
     case "meeting_summary":
-      advancedIntro = "請條列說明會議主題、會議日期與參與人員。";
-      advancedBody = "重點摘要要涵蓋三個以上討論重點，每點說明需超過30字。";
-      advancedFooter = "最後請加入「待追蹤事項」與「結語」。";
+      structure = [
+        "1. 【會議簡介】：簡要說明會議主題、日期、參與人。",
+        "2. 【討論重點】：條列三個以上討論結論，每點超過60字。",
+        "3. 【待追蹤事項】：條列需追蹤議題與負責人。",
+        "4. 【會議結語】：一句正向鼓勵或行動呼籲。"
+      ];
       break;
     case "annual_report":
-      advancedIntro = "以專業、邏輯嚴謹方式撰寫年度業績摘要。";
-      advancedBody = "內容需包含：1. 總體業績數據 2. 成功案例 3. 面臨挑戰與未來展望。";
-      advancedFooter = "請用條列方式呈現，結尾提供一段展望語。";
+      structure = [
+        "1. 【年度成果摘要】：描述整體營運成績與目標達成度。",
+        "2. 【成功案例】：舉例說明代表性案例或亮點。",
+        "3. 【挑戰與展望】：分析困難、提出未來策略。",
+        "4. 【收尾展望】：提出未來規劃與勉勵。"
+      ];
       break;
     case "business_reply":
-      advancedIntro = "請用禮貌、正面、專業的語氣撰寫回信內容。";
-      advancedBody = "開頭簡短致意，說明收到對方信件，內容要明確回應需求並表達合作誠意。";
-      advancedFooter = "結尾請再次強調合作期待與聯絡方式。";
+      structure = [
+        "1. 【開頭致意】：簡短回應、致謝。",
+        "2. 【需求回覆】：針對對方來信明確回應。",
+        "3. 【合作誠意】：再次表達合作期待。",
+        "4. 【結尾邀請】：請對方有任何需求隨時聯絡。"
+      ];
       break;
     default:
-      advancedIntro = `請用${inputs.tone}語氣，針對主題詳細展開說明，不要只寫一句話。`;
-      advancedBody = `內容要分段，包含主題說明、三個具體建議或重點，每點用${inputs.format}展現。`;
-      advancedFooter = `結尾請呼應受眾需求，並提出鼓勵/行動呼籲。`;
+      structure = [
+        "1. 【主題背景】：說明主題、目標、需求或挑戰。",
+        "2. 【內容重點】：條列三大重點，每點不少於60字。",
+        "3. 【應用舉例】：舉1-2個實際案例或常見場景。",
+        "4. 【FAQ或行動呼籲】：可列一個常見疑問與建議解法，並有一句收尾鼓勵。"
+      ];
       break;
   }
 
+  // 進階提示
+  if (inputs.constraint) extraSections.push("請務必遵守以下限制：" + inputs.constraint);
+  if (inputs.reference) extraSections.push("請適當引用或整合以下資料來源：" + inputs.reference);
+  if (inputs.format) extraSections.push("輸出格式採用【" + inputs.format + "】，請分段條列、層次分明。");
+
+  extraSections.push("最後請自動檢查內容有無遺漏關鍵重點，並補充不足之處。字數至少" + minTotalLength + "字，內容需有邏輯、細節和專業感。");
+
   return `
-你現在是一位${inputs.userRole}，目標是為${inputs.audience}在${inputs.platform}平台，主題「${inputs.topic}」創作內容。
-${advancedIntro}
-${advancedBody}
-${inputs.constraint ? '限制條件：' + inputs.constraint : ''}
-${inputs.reference ? '引用資料：' + inputs.reference : ''}
-${advancedFooter}
-總內容請有條理、有深度，務必達到200字以上。
-`.trim();
+你是${inputs.userRole}，目標是為${inputs.audience}在${inputs.platform}平台撰寫主題「${inputs.topic}」內容，語氣請以${inputs.tone}為主。
+
+請依下列結構詳細產出：
+${structure.join('\n')}
+
+${extraSections.join('\n')}
+  `.trim();
 }
 
 // --- 登入與登出 --- //
@@ -300,7 +324,7 @@ function initForm() {
       group: document.getElementById('group').value,
     };
 
-    const prompt = generateDetailedPrompt(inputs, templateType);
+    const prompt = generateHighValuePrompt(inputs, templateType);
     lastPrompt = { ...inputs, prompt, ts: new Date() };
 
     output.value = prompt;
@@ -359,7 +383,7 @@ function setupTemplateSelection() {
   };
 }
 
-// --- 動態 AI 回饋（讓 AI 感） --- //
+// --- 動態 AI 回饋 --- //
 function getRandomAiFeedback() {
   const feedbackList = [
     "🤖 AI小秘書：這份 prompt 很棒，建議再加入一個案例會更豐富！",
