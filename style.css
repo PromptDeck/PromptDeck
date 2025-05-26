@@ -350,3 +350,29 @@ small {
   border-radius: 10px !important;
   font-weight: 700 !important;
 }
+/* 手機版：讓清空按鈕在 template-header 區塊下方，避免蓋住內容 */
+@media (max-width: 800px) {
+  .template-header {
+    padding-bottom: 48px !important;
+    min-height: 0;
+  }
+  #clear-form {
+    position: static !important;
+    display: block;
+    width: 98%;
+    margin: 10px 0 0 0;
+    right: auto;
+    top: auto;
+    float: none;
+  }
+}
+
+/* 手機版：讓所有 input/select/textarea 變窄（紅色區塊 padding） */
+@media (max-width: 800px) {
+  .form input,
+  .form select,
+  .form textarea {
+    padding: 4px 6px !important;
+    font-size: 1em !important;
+  }
+}
