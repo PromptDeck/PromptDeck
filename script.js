@@ -326,13 +326,21 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
       logoutBtn.style.display = 'none';
     }
   }
-  loginBtn.onclick = () => { loginModal.classList.add('show'); };
-  document.getElementById('modal-close').onclick = () => loginModal.classList.remove('show');
+
+  // ====== 這裡是修正重點 ======
+  loginBtn.onclick = () => { 
+    loginModal.classList.remove('hidden'); // 移除 hidden 就會顯示 modal
+  };
+  document.getElementById('modal-close').onclick = () => {
+    loginModal.classList.add('hidden'); // 加回 hidden 就會隱藏 modal
+  };
+  // =============================
+
   document.getElementById('google-login').onclick = async function () {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      loginModal.classList.remove('show');
+      loginModal.classList.add('hidden'); // 登入後自動隱藏
     } catch (e) {
       alert('Google 登入失敗：' + e.message);
     }
@@ -353,7 +361,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
   document.getElementById('save-btn').onclick = async function () {
     if (!currentUser) {
       showToast('請先登入才能收藏');
-      loginModal.classList.add('show');
+      loginModal.classList.remove('hidden'); // 未登入時也顯示登入 modal
       return;
     }
     const data = {
