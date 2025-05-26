@@ -378,29 +378,34 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     loadFavorites();
   };
 
-  async function loadFavorites() {
-    if (!currentUser) {
-      favoritesSection.style.display = 'none';
-      return;
-    }
-    const q = query(collection(db(), "favorites"), where("email", "==", currentUser.email), orderBy("ts", "desc"));
-    const snap = await getDocs(q);
-    favoritesList.innerHTML = '';
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
-      const div = document.createElement('div');
-      div.className = 'favorite-item';
-      div.innerHTML = `<pre style="font-size:1em;white-space:pre-wrap;">${d.prompt}</pre>
-      <div class="favorite-actions">
-        <button onclick="navigator.clipboard.writeText(\`${d.prompt.replace(/`/g, '\\`')}\`).then(()=>window.showToast('已複製'))">複製</button>
-        <button onclick="deleteFavorite('${docSnap.id}')">刪除</button>
-      </div>
-      <div style="color:#8bb7fa;font-size:0.98em;margin-top:4px;">分組：${d.group || '-'}</div>
-    `;
-      favoritesList.appendChild(div);
-    });
-    favoritesSection.style.display = 'block';
+async function loadFavorites() {
+  if (!auth.currentUser) {
+    favoritesSection.style.display = 'none';
+    return;
   }
+  const q = query(
+    collection(db(), "favorites"),
+    where("email", "==", auth.currentUser.email),
+    orderBy("ts", "desc")
+  );
+  const snap = await getDocs(q);
+  favoritesList.innerHTML = '';
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    const div = document.createElement('div');
+    div.className = 'favorite-item';
+    div.innerHTML = `<pre style="font-size:1em;white-space:pre-wrap;">${d.prompt}</pre>
+    <div class="favorite-actions">
+      <button onclick="navigator.clipboard.writeText(\`${d.prompt.replace(/`/g, '\\`')}\`).then(()=>window.showToast('已複製'))">複製</button>
+      <button onclick="deleteFavorite('${docSnap.id}')">刪除</button>
+    </div>
+    <div style="color:#8bb7fa;font-size:0.98em;margin-top:4px;">分組：${d.group || '-'}</div>
+  `;
+    favoritesList.appendChild(div);
+  });
+  favoritesSection.style.display = 'block';
+}
+
   window.showToast = showToast;
   window.deleteFavorite = async function (id) {
     if (!window.confirm('確定要刪除嗎？')) return;
