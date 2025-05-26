@@ -1,5 +1,23 @@
-// 範本全部優化、分類
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
+  authDomain: "promptdeck-8366f.firebaseapp.com",
+  projectId: "promptdeck-8366f",
+  storageBucket: "promptdeck-8366f.firebasestorage.app",
+  messagingSenderId: "1047872909519",
+  appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
+  measurementId: "G-QD99FJNSGH"
+};
+const app = initializeApp(firebaseConfig);
+const dbInstance = getFirestore(app);
+const auth = getAuth(app);
+
 document.addEventListener('DOMContentLoaded', function () {
+
+  // ===== 範本全部優化、分類 =====
   const templates = {
     b2b_intro_mail: {
       goal: "品牌塑造",
@@ -288,7 +306,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     setTimeout(() => t.style.display = 'none', 1600);
   }
 
-  // Google 登入
+  // ---- Google 登入/登出 ----
   const loginModal = document.getElementById('login-modal');
   const loginBtn = document.getElementById('login-btn');
   const logoutBtn = document.getElementById('logout-btn');
@@ -311,25 +329,26 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
   document.getElementById('modal-close').onclick = () => loginModal.classList.remove('show');
   document.getElementById('google-login').onclick = async function () {
     try {
-      const provider = new window._GoogleAuthProvider();
-      await window._signInWithPopup(window._auth, provider);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
       loginModal.classList.remove('show');
     } catch (e) {
       alert('Google 登入失敗：' + e.message);
     }
   };
-  logoutBtn.onclick = () => window._signOut(window._auth);
+  logoutBtn.onclick = () => signOut(auth);
 
-  window._onAuthStateChanged && window._onAuthStateChanged(window._auth, user => {
+  onAuthStateChanged(auth, user => {
     currentUser = user;
     updateUserUI(user);
     loadFavorites();
   });
 
-  // 收藏
-  const db = () => window._db;
+  // ---- 收藏、留言、匯出 ----
+  const db = () => dbInstance;
   const favoritesSection = document.getElementById('favorites-section');
   const favoritesList = document.getElementById('favorites-list');
+
   document.getElementById('save-btn').onclick = async function () {
     if (!currentUser) {
       showToast('請先登入才能收藏');
@@ -342,7 +361,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
       email: currentUser.email,
       ts: Date.now()
     };
-    await window._addDoc(window._collection(db(), "favorites"), data);
+    await addDoc(collection(db(), "favorites"), data);
     showToast('已收藏到雲端！');
     loadFavorites();
   };
@@ -352,8 +371,8 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
       favoritesSection.style.display = 'none';
       return;
     }
-    const q = window._query(window._collection(db(), "favorites"), window._where("email", "==", currentUser.email), window._orderBy("ts", "desc"));
-    const snap = await window._getDocs(q);
+    const q = query(collection(db(), "favorites"), where("email", "==", currentUser.email), orderBy("ts", "desc"));
+    const snap = await getDocs(q);
     favoritesList.innerHTML = '';
     snap.forEach(docSnap => {
       const d = docSnap.data();
@@ -373,7 +392,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
   window.showToast = showToast;
   window.deleteFavorite = async function (id) {
     if (!window.confirm('確定要刪除嗎？')) return;
-    await window._deleteDoc(window._doc(db(), "favorites", id));
+    await deleteDoc(doc(db(), "favorites", id));
     loadFavorites();
   };
 
@@ -392,7 +411,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     e.preventDefault();
     const msg = document.getElementById('feedback-message').value.trim();
     if (!msg) return;
-    await window._addDoc(window._collection(db(), "feedbacks"), {
+    await addDoc(collection(db(), "feedbacks"), {
       message: msg,
       email: currentUser ? currentUser.email : '',
       ts: Date.now()
@@ -401,4 +420,5 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     document.getElementById('feedback-message').value = '';
     setTimeout(() => { document.getElementById('feedback-success').innerText = ''; }, 2500);
   };
+
 });
