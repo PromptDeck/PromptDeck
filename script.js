@@ -402,3 +402,4 @@ document.getElementById('feedback-form').onsubmit = async function(e) {
   document.getElementById('feedback-message').value = '';
   setTimeout(() => { document.getElementById('feedback-success').innerText = ''; }, 2500);
 };
+  });
