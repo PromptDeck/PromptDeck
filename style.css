@@ -116,7 +116,7 @@ input, select, textarea {
   font-size: 1.13em;
   border-radius: 8px;
   border: 1.3px solid #dbe5ed;
-  padding: 13px 10px;
+  padding: 4px 6px;
   background: #fafdff;
   margin-bottom: 2px;
   margin-top: 3px;
@@ -364,15 +364,5 @@ small {
     right: auto;
     top: auto;
     float: none;
-  }
-}
-
-/* 手機版：讓所有 input/select/textarea 變窄（紅色區塊 padding） */
-@media (max-width: 800px) {
-  .form input,
-  .form select,
-  .form textarea {
-    padding: 4px 6px !important;
-    font-size: 1em !important;
   }
 }
