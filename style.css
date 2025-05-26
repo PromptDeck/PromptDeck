@@ -304,3 +304,49 @@ small {
   .main-container { padding: 11vw 2vw 5vw 2vw; min-width: 0; }
   .header { font-size: 1.45em; padding: 18px 5vw 11px 5vw; }
 }
+.form label,
+.form input,
+.form select,
+.form textarea,
+.form small,
+.form .btn-submit:not([type="submit"]) {
+  font-size: 0.82em !important;
+}
+
+.form input,
+.form select,
+.form textarea {
+  padding: 4px 6px !important;
+  border-radius: 4px !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.form label {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  font-weight: 600 !important;
+}
+
+.form small {
+  font-size: 0.75em !important;
+  margin-bottom: 1px !important;
+  margin-top: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.form .btn-submit:not([type="submit"]) {
+  padding: 7px 0 !important;
+  font-size: 0.88em !important;
+  border-radius: 6px !important;
+  margin-top: 8px !important;
+  margin-bottom: 4px !important;
+}
+
+/* 這裡是大顆產生按鈕專屬樣式 */
+.form .btn-submit[type="submit"] {
+  font-size: 1.25em !important;
+  padding: 13px 0 !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
