@@ -17,35 +17,6 @@
      crossorigin="anonymous"></script>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
-    window._firebaseConfig = {
-      apiKey: "AIzaSyDPE6TL1HbFbIHnRZnL1uHX0sv3AYNr9dQ",
-      authDomain: "promptdeck-8366f.firebaseapp.com",
-      projectId: "promptdeck-8366f",
-      storageBucket: "promptdeck-8366f.firebasestorage.app",
-      messagingSenderId: "1047872909519",
-      appId: "1:1047872909519:web:5fe6b0e35d109d63de07ba",
-      measurementId: "G-QD99FJNSGH"
-    };
-    const app = initializeApp(window._firebaseConfig);
-    window._db = getFirestore(app);
-    window._auth = getAuth(app);
-    window._GoogleAuthProvider = GoogleAuthProvider;
-    window._signInWithPopup = signInWithPopup;
-    window._onAuthStateChanged = onAuthStateChanged;
-    window._signOut = signOut;
-    window._collection = collection;
-    window._addDoc = addDoc;
-    window._getDocs = getDocs;
-    window._query = query;
-    window._where = where;
-    window._orderBy = orderBy;
-    window._deleteDoc = deleteDoc;
-    window._doc = doc;
-  </script>
 </head>
 <body>
   <header class="header">
@@ -198,7 +169,7 @@
   </div>
   <div id="toast" class="toast"></div>
   <footer class="footer">Prompt 產生器 © 2025</footer>
-  <!-- 必須放在 body 最後 -->
+  <!-- 關鍵，只需要這一行，其他 firebase import 都要搬去 script.js -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
