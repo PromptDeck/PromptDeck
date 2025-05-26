@@ -300,6 +300,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     showToast('已複製到剪貼簿！');
   };
 
+  // 修正版 showToast，讓提示有動畫效果
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.innerText = msg;
@@ -308,7 +309,6 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
       t.classList.remove('show');
     }, 1600);
   }
-
 
   // ---- Google 登入/登出 ----
   const loginModal = document.getElementById('login-modal');
@@ -330,31 +330,24 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     }
   }
 
-  // ====== 這裡是修正重點 ======
+  // modal 顯示隱藏修正
   loginBtn.onclick = () => { 
-    loginModal.classList.remove('hidden'); // 移除 hidden 就會顯示 modal
+    loginModal.classList.remove('hidden'); // 顯示 modal
   };
   document.getElementById('modal-close').onclick = () => {
-    loginModal.classList.add('hidden'); // 加回 hidden 就會隱藏 modal
+    loginModal.classList.add('hidden'); // 隱藏 modal
   };
-  // =============================
 
   document.getElementById('google-login').onclick = async function () {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      loginModal.classList.add('hidden'); // 登入後自動隱藏
+      loginModal.classList.add('hidden'); // 登入後隱藏
     } catch (e) {
       alert('Google 登入失敗：' + e.message);
     }
   };
   logoutBtn.onclick = () => signOut(auth);
-
-  onAuthStateChanged(auth, user => {
-    currentUser = user;
-    updateUserUI(user);
-    loadFavorites();
-  });
 
   // ---- 收藏、留言、匯出 ----
   const db = () => dbInstance;
@@ -362,15 +355,15 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
   const favoritesList = document.getElementById('favorites-list');
 
   document.getElementById('save-btn').onclick = async function () {
-    if (!currentUser) {
+    if (!auth.currentUser) {
       showToast('請先登入才能收藏');
-      loginModal.classList.remove('hidden'); // 未登入時也顯示登入 modal
+      loginModal.classList.remove('hidden'); // 未登入時顯示登入 modal
       return;
     }
     const data = {
       prompt: document.getElementById('output').value,
       group: document.getElementById('group').value,
-      email: currentUser.email,
+      email: auth.currentUser.email,
       ts: Date.now()
     };
     await addDoc(collection(db(), "favorites"), data);
@@ -378,34 +371,37 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     loadFavorites();
   };
 
-async function loadFavorites() {
-  if (!auth.currentUser) {
-    favoritesSection.style.display = 'none';
-    return;
+  async function loadFavorites() {
+    if (!auth.currentUser) {
+      favoritesSection.style.display = 'none';
+      return;
+    }
+    const q = query(
+      collection(db(), "favorites"),
+      where("email", "==", auth.currentUser.email),
+      orderBy("ts", "desc")
+    );
+    const snap = await getDocs(q);
+    favoritesList.innerHTML = '';
+    if (snap.empty) {
+      favoritesList.innerHTML = '<div style="color:#888;font-size:1.02em;">尚未收藏任何內容</div>';
+    } else {
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const div = document.createElement('div');
+        div.className = 'favorite-item';
+        div.innerHTML = `<pre style="font-size:1em;white-space:pre-wrap;">${d.prompt}</pre>
+          <div class="favorite-actions">
+            <button onclick="navigator.clipboard.writeText(\`${d.prompt.replace(/`/g, '\\`')}\`).then(()=>window.showToast('已複製'))">複製</button>
+            <button onclick="deleteFavorite('${docSnap.id}')">刪除</button>
+          </div>
+          <div style="color:#8bb7fa;font-size:0.98em;margin-top:4px;">分組：${d.group || '-'}</div>
+        `;
+        favoritesList.appendChild(div);
+      });
+    }
+    favoritesSection.style.display = 'block';
   }
-  const q = query(
-    collection(db(), "favorites"),
-    where("email", "==", auth.currentUser.email),
-    orderBy("ts", "desc")
-  );
-  const snap = await getDocs(q);
-  favoritesList.innerHTML = '';
-  snap.forEach(docSnap => {
-    const d = docSnap.data();
-    const div = document.createElement('div');
-    div.className = 'favorite-item';
-    div.innerHTML = `<pre style="font-size:1em;white-space:pre-wrap;">${d.prompt}</pre>
-    <div class="favorite-actions">
-      <button onclick="navigator.clipboard.writeText(\`${d.prompt.replace(/`/g, '\\`')}\`).then(()=>window.showToast('已複製'))">複製</button>
-      <button onclick="deleteFavorite('${docSnap.id}')">刪除</button>
-    </div>
-    <div style="color:#8bb7fa;font-size:0.98em;margin-top:4px;">分組：${d.group || '-'}</div>
-  `;
-    favoritesList.appendChild(div);
-  });
-  favoritesSection.style.display = 'block';
-}
-
   window.showToast = showToast;
   window.deleteFavorite = async function (id) {
     if (!window.confirm('確定要刪除嗎？')) return;
@@ -430,12 +426,19 @@ async function loadFavorites() {
     if (!msg) return;
     await addDoc(collection(db(), "feedbacks"), {
       message: msg,
-      email: currentUser ? currentUser.email : '',
+      email: auth.currentUser ? auth.currentUser.email : '',
       ts: Date.now()
     });
     document.getElementById('feedback-success').innerText = '已收到您的寶貴留言！';
     document.getElementById('feedback-message').value = '';
     setTimeout(() => { document.getElementById('feedback-success').innerText = ''; }, 2500);
   };
+
+  // 每次登入/登出都即時同步顯示「我的最愛」
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+    updateUserUI(user);
+    loadFavorites();
+  });
 
 });
