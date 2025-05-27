@@ -12,9 +12,6 @@
   <meta property="og:description" content="你的 AI Prompt 管理與產生神器，立即體驗個人化互動！" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://promptdeck.github.io/PromptDeck/" />
-  <!-- <meta property="og:image" content="https://promptdeck.github.io/PromptDeck/og_image.png" /> -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4132904286933531"
-     crossorigin="anonymous"></script>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -28,7 +25,6 @@
     </div>
   </header>
   <main class="main-container">
-    <!-- SEO 主標題/說明 -->
     <section class="intro-section">
       <h1>PromptDeck — AI Prompt 產生器、收藏與雲端管理神器</h1>
       <p>
@@ -36,7 +32,6 @@
         選擇適合範本、自動帶入情境，一鍵產生高品質 AI 指令。讓你的 AI 實戰更高效、更有條理！
       </p>
     </section>
-    <!-- 引導式 step 強調 -->
     <section class="template-header highlight-step">
       <div class="template-guide">
         <span class="step-icon">🚀</span>
@@ -45,6 +40,16 @@
       <label for="template-select"><b>快速套用範本</b></label>
       <select id="template-select">
         <option value="">（請下拉選擇範本，所有內容會自動帶入）</option>
+        <!-- 專案區塊搬到最上面 -->
+        <optgroup label="專案">
+          <option value="project_vendor_mail">寫信給廠商邀約課程、提案</option>
+          <option value="project_word_report">寫專案企劃word報告</option>
+          <option value="project_ppt">寫專案企劃簡報</option>
+          <option value="project_name">想專案名稱 命名</option>
+          <option value="meeting_name">想會議名稱 命名</option>
+          <option value="satisfaction_survey">設計滿意度問卷</option>
+          <option value="exchange_survey">設計交流問卷</option>
+        </optgroup>
         <optgroup label="商務應用">
           <option value="b2b_intro_mail">業務開發郵件（B2B）</option>
           <option value="annual_report">年度業績簡報</option>
@@ -76,16 +81,6 @@
         </optgroup>
         <optgroup label="圖像生成">
           <option value="midjourney_art">Midjourney 圖像描述</option>
-        </optgroup>
-        <!-- 新增的專案範本 -->
-        <optgroup label="專案">
-          <option value="project_vendor_mail">寫信給廠商邀約課程、提案</option>
-          <option value="project_word_report">寫專案企劃word報告</option>
-          <option value="project_ppt">寫專案企劃簡報</option>
-          <option value="project_name">想專案名稱 命名</option>
-          <option value="meeting_name">想會議名稱 命名</option>
-          <option value="satisfaction_survey">設計滿意度問卷</option>
-          <option value="exchange_survey">設計交流問卷</option>
         </optgroup>
       </select>
       <button id="clear-form" type="button">清空</button>
@@ -179,7 +174,6 @@
   </div>
   <div id="toast" class="toast"></div>
   <footer class="footer">Prompt 產生器 © 2025</footer>
-  <!-- 關鍵，只需要這一行，其他 firebase import 都要搬去 script.js -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
