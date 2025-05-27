@@ -20,20 +20,6 @@ const auth = getAuth(app);
 document.addEventListener('DOMContentLoaded', function () {
   // ===== 範本全部優化、分類 =====
   const templates = {
-    // ...（原有範本全部保留在這裡，省略）
-    b2b_intro_mail: {
-      goal: "品牌塑造",
-      topic: "B2B 業務開發郵件",
-      userRole: "業務專員",
-      audience: "潛在合作夥伴",
-      platform: "ChatGPT",
-      tone: "專業",
-      constraint: "條列、300字內",
-      reference: "公司簡介、產品優勢",
-      format: "詳細描述"
-    },
-    // ...（中間所有原有範本照舊，省略）
-
     // ===== 專案類 =====
     project_vendor_mail: {
       goal: "課程合作",
@@ -111,6 +97,227 @@ document.addEventListener('DOMContentLoaded', function () {
       constraint: "開放題、條列6題以內",
       reference: "",
       format: "條列問卷題目"
+    },
+    // ===== 其他原有範本 =====
+    b2b_intro_mail: {
+      goal: "品牌塑造",
+      topic: "B2B 業務開發郵件",
+      userRole: "業務專員",
+      audience: "潛在合作夥伴",
+      platform: "ChatGPT",
+      tone: "專業",
+      constraint: "條列、300字內",
+      reference: "公司簡介、產品優勢",
+      format: "詳細描述"
+    },
+    annual_report: {
+      goal: "效率工作",
+      topic: "年度業績簡報",
+      userRole: "行銷經理",
+      audience: "主管、董事會",
+      platform: "ChatGPT",
+      tone: "專業",
+      constraint: "含數據、條列",
+      reference: "年度銷售數據、重要事件",
+      format: "詳細描述"
+    },
+    business_reply: {
+      goal: "品牌塑造",
+      topic: "商務合作回信",
+      userRole: "專案經理",
+      audience: "潛在合作廠商",
+      platform: "ChatGPT",
+      tone: "專業且親切",
+      constraint: "禮貌、具體回覆",
+      reference: "合作條件、先前溝通紀錄",
+      format: "簡短描述＋一句展望"
+    },
+    cover_letter: {
+      goal: "學習成長",
+      topic: "求職信（Cover Letter）",
+      userRole: "求職者",
+      audience: "人資、面試主管",
+      platform: "ChatGPT",
+      tone: "專業誠懇",
+      constraint: "300字內、量身打造",
+      reference: "職缺描述、自傳",
+      format: "詳細描述"
+    },
+    edm_email: {
+      goal: "品牌塑造",
+      topic: "Email 行銷 EDM 樣板",
+      userRole: "行銷人員",
+      audience: "目標客戶",
+      platform: "ChatGPT",
+      tone: "激勵、吸引人",
+      constraint: "附 CTA（行動呼籲）",
+      reference: "促銷活動資訊",
+      format: "簡短描述＋一句展望"
+    },
+    meeting_summary: {
+      goal: "效率工作",
+      topic: "會議紀要重點摘要",
+      userRole: "會議記錄者",
+      audience: "團隊同事",
+      platform: "ChatGPT",
+      tone: "專業",
+      constraint: "條列、精簡",
+      reference: "",
+      format: "條列式"
+    },
+    lesson_plan: {
+      goal: "學習成長",
+      topic: "教學腳本",
+      userRole: "老師",
+      audience: "初學者",
+      platform: "ChatGPT",
+      tone: "啟發性",
+      constraint: "逐步、淺顯易懂",
+      reference: "",
+      format: "腳本/多段"
+    },
+    study_notes: {
+      goal: "學習成長",
+      topic: "學習筆記整理",
+      userRole: "學生",
+      audience: "自己、同學",
+      platform: "ChatGPT",
+      tone: "條理清楚",
+      constraint: "條列、重點精簡",
+      reference: "課堂內容",
+      format: "條列式"
+    },
+    resume_bio: {
+      goal: "學習成長",
+      topic: "履歷自傳產生",
+      userRole: "求職者",
+      audience: "面試官、人資",
+      platform: "ChatGPT",
+      tone: "專業",
+      constraint: "300字以內",
+      reference: "學經歷、技能",
+      format: "詳細描述"
+    },
+    creative_copy: {
+      goal: "激發創意",
+      topic: "創意文案",
+      userRole: "文案企劃",
+      audience: "消費大眾",
+      platform: "ChatGPT",
+      tone: "啟發性",
+      constraint: "20字內",
+      reference: "",
+      format: "簡短描述"
+    },
+    ad_headline: {
+      goal: "激發創意",
+      topic: "廣告標題激發",
+      userRole: "行銷企劃",
+      audience: "潛在消費者",
+      platform: "ChatGPT",
+      tone: "激勵",
+      constraint: "10字內",
+      reference: "",
+      format: "條列式"
+    },
+    event_invite: {
+      goal: "激發創意",
+      topic: "活動邀請文",
+      userRole: "活動企劃",
+      audience: "目標參加者",
+      platform: "ChatGPT",
+      tone: "輕鬆",
+      constraint: "",
+      reference: "",
+      format: "簡短描述＋一句展望"
+    },
+    youtube_script: {
+      goal: "激發創意",
+      topic: "YouTube 影片腳本",
+      userRole: "YouTuber",
+      audience: "頻道粉絲",
+      platform: "ChatGPT",
+      tone: "輕鬆幽默",
+      constraint: "分段、可含 emoji",
+      reference: "主題大綱",
+      format: "腳本/多段"
+    },
+    social_post: {
+      goal: "趣味互動",
+      topic: "社群貼文內容",
+      userRole: "社群小編",
+      audience: "粉絲",
+      platform: "ChatGPT",
+      tone: "輕鬆",
+      constraint: "附上 hashtag",
+      reference: "",
+      format: "簡短描述"
+    },
+    newsletter: {
+      goal: "品牌塑造",
+      topic: "電子報開頭段落",
+      userRole: "行銷人員",
+      audience: "訂閱者",
+      platform: "ChatGPT",
+      tone: "溫馨",
+      constraint: "",
+      reference: "",
+      format: "詳細描述"
+    },
+    faq_support: {
+      goal: "效率工作",
+      topic: "客服 FAQ 回覆",
+      userRole: "客服人員",
+      audience: "顧客",
+      platform: "ChatGPT",
+      tone: "溫馨",
+      constraint: "禮貌、迅速",
+      reference: "",
+      format: "條列式"
+    },
+    product_review: {
+      goal: "激發創意",
+      topic: "產品開箱心得",
+      userRole: "部落客",
+      audience: "潛在買家",
+      platform: "ChatGPT",
+      tone: "品牌感",
+      constraint: "誠實、具體",
+      reference: "產品說明書",
+      format: "簡短描述＋一句展望"
+    },
+    product_faq: {
+      goal: "效率工作",
+      topic: "產品 FAQ 自動生成",
+      userRole: "產品經理",
+      audience: "顧客",
+      platform: "ChatGPT",
+      tone: "溫馨且解釋性強",
+      constraint: "條列、每題簡潔明瞭",
+      reference: "產品說明書、常見問題紀錄",
+      format: "條列式"
+    },
+    seo_title: {
+      goal: "品牌塑造",
+      topic: "SEO 文章標題與關鍵字",
+      userRole: "網站小編",
+      audience: "搜尋用戶",
+      platform: "ChatGPT",
+      tone: "專業",
+      constraint: "中英文各五組",
+      reference: "主要產品、目標市場",
+      format: "條列式"
+    },
+    midjourney_art: {
+      goal: "激發創意",
+      topic: "Midjourney 圖像指令",
+      userRole: "AI 創作者",
+      audience: "AI 圖像生成工具",
+      platform: "Midjourney",
+      tone: "啟發性",
+      constraint: "中英對照",
+      reference: "",
+      format: "條列式"
     }
   };
 
@@ -119,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function () {
       .forEach(e => {
         if (e.id !== "template-select" && e.id !== "clear-form")
           e.disabled = !enabled;
-        // 視覺強化 disabled 狀態
         if (!enabled) {
           e.classList.add('disabled-strong');
         } else {
@@ -169,7 +375,6 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
 
     document.getElementById('output').value = prompt;
     document.getElementById('output-section').style.display = '';
-    // 新增產生結果後自動 focus
     setTimeout(() => {
       document.getElementById('output').focus();
       document.getElementById('output').scrollIntoView({ behavior: "smooth", block: "center" });
@@ -183,7 +388,6 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     showToast('已複製到剪貼簿！');
   };
 
-  // 修正版 showToast，讓提示有動畫效果
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.innerText = msg;
@@ -193,7 +397,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     }, 1600);
   }
 
-  // ---- Google 登入/登出 ----
+  // Google 登入/登出
   const loginModal = document.getElementById('login-modal');
   const loginBtn = document.getElementById('login-btn');
   const logoutBtn = document.getElementById('logout-btn');
@@ -213,26 +417,25 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     }
   }
 
-  // modal 顯示隱藏修正
   loginBtn.onclick = () => { 
-    loginModal.classList.remove('hidden'); // 顯示 modal
+    loginModal.classList.remove('hidden');
   };
   document.getElementById('modal-close').onclick = () => {
-    loginModal.classList.add('hidden'); // 隱藏 modal
+    loginModal.classList.add('hidden');
   };
 
   document.getElementById('google-login').onclick = async function () {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      loginModal.classList.add('hidden'); // 登入後隱藏
+      loginModal.classList.add('hidden');
     } catch (e) {
       alert('Google 登入失敗：' + e.message);
     }
   };
   logoutBtn.onclick = () => signOut(auth);
 
-  // ---- 收藏、留言、匯出 ----
+  // 收藏、留言、匯出
   const db = () => dbInstance;
   const favoritesSection = document.getElementById('favorites-section');
   const favoritesList = document.getElementById('favorites-list');
@@ -240,7 +443,7 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
   document.getElementById('save-btn').onclick = async function () {
     if (!auth.currentUser) {
       showToast('請先登入才能收藏');
-      loginModal.classList.remove('hidden'); // 未登入時顯示登入 modal
+      loginModal.classList.remove('hidden');
       return;
     }
     const data = {
@@ -317,14 +520,14 @@ ${get('reference') ? "可參考資料：" + get('reference') : ""}`;
     setTimeout(() => { document.getElementById('feedback-success').innerText = ''; }, 2500);
   };
 
-  // 每次登入/登出都即時同步顯示「我的最愛」
+  // 登入/登出後即時同步顯示「我的最愛」
   onAuthStateChanged(auth, user => {
     currentUser = user;
     updateUserUI(user);
     loadFavorites();
   });
 
-  // ===== 即時必填欄位驗證/紅框提示 =====
+  // 即時必填欄位驗證/紅框提示
   const requiredFields = ['goal','topic','userRole','audience','platform','tone','format'];
   requiredFields.forEach(id => {
     const el = document.getElementById(id);
