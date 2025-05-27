@@ -239,6 +239,84 @@ document.addEventListener('DOMContentLoaded', function () {
       constraint: "中英對照",
       reference: "",
       format: "條列式"
+    },
+     // ===== 專案類 =====
+    project_vendor_mail: {
+      goal: "課程合作",
+      topic: "邀約廠商舉辦課程或專案提案",
+      userRole: "企劃人員",
+      audience: "潛在合作廠商",
+      platform: "ChatGPT",
+      tone: "專業且誠懇",
+      constraint: "條列清楚合作重點、簡潔易讀",
+      reference: "過往合作案例、公司簡介",
+      format: "Email 範本"
+    },
+    project_word_report: {
+      goal: "專案規劃",
+      topic: "專案企劃書（word 報告）",
+      userRole: "專案經理",
+      audience: "決策主管、團隊成員",
+      platform: "ChatGPT",
+      tone: "條理分明、簡潔有力",
+      constraint: "包含案由、現況、痛點、規劃方向、行動方案、預期效益、後續時程",
+      reference: "公司內部報告模板",
+      format: "詳細分段描述"
+    },
+    project_ppt: {
+      goal: "簡報規劃",
+      topic: "專案企劃簡報",
+      userRole: "專案經理",
+      audience: "主管、提案委員",
+      platform: "ChatGPT",
+      tone: "重點扼要、易懂",
+      constraint: "以分頁條列方式說明",
+      reference: "簡報範本、競品資料",
+      format: "分頁條列"
+    },
+    project_name: {
+      goal: "專案命名",
+      topic: "專案名稱命名",
+      userRole: "專案負責人",
+      audience: "團隊、決策層",
+      platform: "ChatGPT",
+      tone: "創意、簡潔、有記憶點",
+      constraint: "可附上命名邏輯說明",
+      reference: "專案背景",
+      format: "條列式名稱＋說明"
+    },
+    meeting_name: {
+      goal: "會議命名",
+      topic: "會議名稱命名",
+      userRole: "會議召集人",
+      audience: "團隊成員",
+      platform: "ChatGPT",
+      tone: "創意、簡潔",
+      constraint: "中英文都可",
+      reference: "會議主題",
+      format: "條列式名稱＋簡述"
+    },
+    satisfaction_survey: {
+      goal: "問卷設計",
+      topic: "設計滿意度問卷",
+      userRole: "問卷設計者",
+      audience: "使用者或客戶",
+      platform: "ChatGPT",
+      tone: "中立、明確",
+      constraint: "條列10題內、題型多元",
+      reference: "過往問卷範例",
+      format: "問卷題目條列"
+    },
+    exchange_survey: {
+      goal: "問卷設計",
+      topic: "設計交流問卷",
+      userRole: "問卷設計者",
+      audience: "合作夥伴、團隊成員",
+      platform: "ChatGPT",
+      tone: "開放、鼓勵分享",
+      constraint: "開放題、條列6題以內",
+      reference: "",
+      format: "條列問卷題目"
     }
   };
 
