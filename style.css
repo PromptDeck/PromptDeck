@@ -366,3 +366,17 @@ small {
     float: none;
   }
 }
+.disabled-strong {
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+.input-error {
+  border: 2px solid #e34d3d !important;
+  background: #fff7f7 !important;
+}
+.input-error-tip {
+  display: inline-block;
+  margin-left: 6px;
+}
+
